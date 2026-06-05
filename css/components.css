@@ -1,0 +1,71 @@
+@charset "utf-8";
+:root {
+    --color-bg: #fff7fa;
+    --color-surface: #ffffff;
+    --color-surface-soft: #fff0f5;
+    --color-primary: #f29ab5;
+    --color-primary-dark: #df789a;
+    --color-text: #3d3036;
+    --color-text-muted: #8f7b84;
+    --color-border: #f3d8e2;
+    --color-shadow: rgba(190, 120, 150, 0.16);
+
+    --font-base: "Hiragino Sans", "Noto Sans JP", sans-serif;
+
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+
+    --space-xs: 6px;
+    --space-sm: 10px;
+    --space-md: 16px;
+    --space-lg: 24px;
+
+    --header-height: 78px;
+}
+.button {
+    border: none;
+    border-radius: 999px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 700;
+}
+.button--primary {
+    color: #fff;
+    background: var(--color-primary);
+    box-shadow: 0 8px 18px var(--color-shadow);
+}
+.button--ghost {
+    color: var(--color-primary-dark);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+}
+.form-card {
+    padding: var(--space-md);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 12px 28px var(--color-shadow);
+}
+.form-field {
+    display: grid;
+    gap: 8px;
+    margin-bottom: var(--space-md);
+}
+.form-field span {
+    font-size: 13px;
+    font-weight: 700;
+}
+.form-field input,
+.form-field textarea,
+.form-field select {
+    width: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    color: var(--color-text);
+    background: #fff;
+}
+.form-field textarea {
+    min-height: 110px;
+}

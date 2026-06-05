@@ -1,0 +1,48 @@
+@charset "utf-8";
+:root {
+    --color-bg: #fff7fa;
+    --color-surface: #ffffff;
+    --color-surface-soft: #fff0f5;
+    --color-primary: #f29ab5;
+    --color-primary-dark: #df789a;
+    --color-text: #3d3036;
+    --color-text-muted: #8f7b84;
+    --color-border: #f3d8e2;
+    --color-shadow: rgba(190, 120, 150, 0.16);
+
+    --font-base: "Hiragino Sans", "Noto Sans JP", sans-serif;
+
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+
+    --space-xs: 6px;
+    --space-sm: 10px;
+    --space-md: 16px;
+    --space-lg: 24px;
+
+    --header-height: 78px;
+}
+
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: var(--font-base);
+    color: var(--color-text);
+    background: var(--color-bg);
+}
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+button {
+    cursor: pointer;
+}
+textarea {
+    resize: vertical;
+}

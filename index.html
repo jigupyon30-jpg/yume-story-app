@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/base.css">
+    <link rel="stylesheet" href="./css/layout.css">
+    <link rel="stylesheet" href="./css/components.css">
+    <link rel="stylesheet" href="./css/page.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alata&family=Aoboshi+One&family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Cinzel:wght@400..900&family=Cormorant+Infant:ital,wght@0,300..700;1,300..700&family=Dosis:wght@200..800&family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Fira+Code:wght@300..700&family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=LINE+Seed+JP&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=M+PLUS+Rounded+1c&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+JP:wght@100..900&family=Noto+Serif+JP:wght@200..900&family=Outfit:wght@100..900&family=Oxygen:wght@300;400;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Quicksand:wght@300..700&family=Roboto:ital,wght@0,100..900;1,100..900&family=Sacramento&family=Shippori+Mincho&family=Shippori+Mincho+B1&family=Work+Sans:ital,wght@0,100..900;1,100..900&family=Zen+Kaku+Gothic+Antique&family=Zen+Kaku+Gothic+New&family=Zen+Maru+Gothic&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
+</head>
+
+<body>
+    <div class="app">
+        <header class="app-header">
+            <div>
+                <p class="app-header__label">Yume Story Studio</p>
+                <h1 class="app-header__title">夢小説制作アプリ</h1>
+            </div>
+        </header>
+
+        <main class="app-main">
+            <!-- 作品一覧画面 -->
+            <section class="page is-active" id="projectListPage">
+                <div class="page-head">
+                    <div>
+                        <p class="page-head__label">Novel List</p>
+                        <h2 class="page-head__title">作品一覧</h2>
+                    </div>
+
+                    <button class="button button--primary" id="openCreateProjectButton">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>新規作品</span>
+                    </button>
+                </div>
+
+                <div class="project-list" id="projectList"></div>
+            </section>
+
+            <!-- 作品作成画面 -->
+            <section class="page" id="projectCreatePage">
+                <div class="page-head">
+                    <div>
+                        <p class="page-head__label">Create</p>
+                        <h2 class="page-head__title">作品を作成</h2>
+                    </div>
+
+                    <button class="button button--ghost" data-back-to-list>
+                        戻る
+                    </button>
+                </div>
+
+                <form class="form-card" id="projectForm">
+                    <label class="form-field">
+                        <span>作品タイトル</span>
+                        <input type="text" id="projectTitle" placeholder="例: ミルクブラウンのお姫様" required>
+                    </label>
+
+                    <label class="form-field">
+                        <span>ジャンル</span>
+                        <select id="projectGenre">
+                            <option value="紅一点">紅一点</option>
+                            <option value="学パロ">学パロ</option>
+                            <option value="社会人パロ">社会人パロ</option>
+                            <option value="芸能界">芸能界</option>
+                            <option value="その他">その他</option>
+                        </select>
+                    </label>
+
+                    <label class="form-field">
+                        <span>あらすじ</span>
+                        <textarea id="projectMemo" placeholder="どんな話にするかメモ"></textarea>
+                    </label>
+
+                    <button class="button button--primary" type="submit">保存する</button>
+                </form>
+            </section>
+
+            <!-- 作品詳細・本文エディタ画面 -->
+            <section class="page" id="projectDetailPage">
+                <div class="page-head">
+                    <div>
+                        <p class="page-head__label" id="detailGenre">Genre</p>
+                        <h2 class="page-head__title" id="detailTitle">作品タイトル</h2>
+                        <p class="page-head__memo" id="detailMemo"></p>
+                    </div>
+
+                    <button class="button button--ghost" data-back-to-list>
+                        作品一覧へ
+                    </button>
+                </div>
+
+                <div class="editor">
+                    <div class="editor__head">
+                        <h3>本文エディタ</h3>
+                        
+                        <div class="block-menu">
+                            <button class="button button--primary" id="openBlockMenuButton">
+                                <i class="fa-solid fa-plus"></i>
+                                <span>ブロック追加</span>
+                            </button>
+
+                            <div class="block-menu__panel" id="blockMenuPanel">
+                                <button class="block-menu__item" data-add-block-type="text">
+                                    <i class="fa-solid fa-file-lines"></i>
+                                    <span>本文</span>
+                                </button>
+
+                                <button class="block-menu__item" data-add-block-type="line">
+                                    <i class="fa-solid fa-comment"></i>
+                                    <span>LINE</span>
+                                </button>
+
+                                <button class="block-menu__item" data-add-block-type="instagram">
+                                    <i class="fa-brands fa-instagram"></i>
+                                    <span>インスタ投稿</span>
+                                </button>
+
+                                <button class="block-menu__item" data-add-block-type="instagramDm">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                    <span>インスタDM</span>
+                                </button>
+
+                                <button class="block-menu__item" data-add-block-type="instagramStory">
+                                    <i class="fa-solid fa-circle-play"></i>
+                                    <span>インスタストーリー</span>
+                                </button>
+
+                                <button class="block-menu__item" data-add-block-type="twitter">
+                                    <i class="fa-brands fa-x-twitter"></i>
+                                    <span>Twitter / X</span>
+                                </button>
+
+                                <button class="block-menu__item" data-add-block-type="news">
+                                    <i class="fa-solid fa-newspaper"></i>
+                                    <span>芸能ニュース</span>
+                                </button>
+
+                                <button class="block-menu__item" data-add-block-type="wiki">
+                                    <i class="fa-solid fa-id-card"></i>
+                                    <span>Wiki</span>
+                                </button>
+                            </div>
+
+                            <div class="block-menu">
+                                <button class="button button--primary" id="openTemplateMenuButton">
+                                    <i class="fa-solid fa-layer-group"></i>
+                                    <span>テンプレ</span>
+                                </button>
+
+                            <div class="block-menu__panel" id="templateMenuPanel">
+                                <button class="block-menu__item" data-add-template="onlyGirl">
+                                    <i class="fa-solid fa-crown"></i>
+                                    <span>紅一点セット</span>
+                                </button>
+
+                                <button class="block-menu__item" data-add-template="school">
+                                    <i class="fa-solid fa-school"></i>
+                                    <span>学パロセット</span>
+                                </button>
+
+                                <button class="block-menu__item" data-add-template="office">
+                                    <i class="fa-solid fa-briefcase"></i>
+                                    <span>社会人セット</span>
+                                </button>
+
+                                <button class="block-menu__item" data-add-template="onlyGirl">
+                                    <i class="fa-solid fa-star"></i>
+                                    <span>芸能界セット</span>
+                                </button>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
+                    <div class="block-list" id="blockList"></div>
+                </div>
+                
+                <div class="preview">
+                    <div class="preview__head">
+                        <h3>プレビュー</h3>
+
+                        <button class="button button--ghost" id="refreshPreviewButton">
+                            <i class="fa-solid fa-rotate-right"></i>
+                            <span>更新</span>
+                        </button>
+                    </div>
+
+                    <div class="preview-list" id="previewList"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="./js/storage.js"></script>
+    <script src="./js/data.js"></script>
+    <script src="./js/templates.js"></script>
+    <script src="./js/ui.js"></script>
+    <script src="./js/project.js"></script>
+    <script src="./js/editor.js"></script>
+    <script src="./js/app.js"></script>
+</body>
+</html>
