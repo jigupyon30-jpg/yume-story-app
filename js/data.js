@@ -15,14 +15,23 @@ const DataFactory = {
             title,
             genre,
             memo,
+
+            characters: [],
+            relationships: [],
+
+            episodes: [
+                {
+                    id: this.createId("episode"),
+                    title: "第1話",
+                    blocks: [],
+
+                    createdAt: now,
+                    updatedAt: now,
+                }
+            ],
+            
             createdAt: now,
             updatedAt: now,
-            // 後からキャラクター登録機能で使う場所
-            characters: [],
-            //  後から関係性メモで使う場所
-            relationships: [],
-            // 本文やSNSブロックを入れる場所
-            blocks: []
         };
     },
 

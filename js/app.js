@@ -11,6 +11,18 @@ const App = {
             UI.showPage(UI.pages.create);
         });
 
+        document.getElementById("createEpisodeButton").addEventListener("click", () => {
+            const project = ProjectController.getCurrentProject();
+
+            if (!project) {
+                return;
+            }
+
+            EpisodeController.createEpisode(
+                project.id
+            );
+        });
+
         document.getElementById("projectForm").addEventListener("submit", (event) => {
             ProjectController.createProject(event);
         });
@@ -29,12 +41,19 @@ const App = {
         });
 
         // プレビューを手更新
-        document.getElementById("refreshPreviewButton"),addEventListener("click", () => {
-            const project = ProjectController.getCurrentProject();
-            EditorController.renderPreview(project);
+        document.getElementById("refreshPreviewButton").addEventListener("click", () => {
+            const episode = ProjectController.getCurrentEpisode();
+
+            if (!episode) {
+                return;
+            }
+
+            EditorController.renderPreview(episode);
         });
 
         document.addEventListener("click", (event) => {
+            const openProjectInfoButton = event.target.closest("[data-open-project-info]");
+            const openEpisodeButton = event.target.closest("[data-open-episode]");
             const openProjectButton = event.target.closest("[data-open-project]");
             const deleteProjectButton = event.target.closest("[data-delete-project]");
             const deleteBlockButton = event.target.closest("[data-delete-block]");
@@ -47,6 +66,25 @@ const App = {
             const deleteDmMessageButton = event.target.closest("[data-delete-dm-message]");
             const deleteLineImageButton = event.target.closest("[data-delete-line-image]");
             const addTemplateButton = event.target.closest("[data-add-template]");
+
+            if (openProjectInfoButton) {
+                const projectId = openProjectInfoButton.dataset.openProjectInfo;
+                ProjectController.openProjectInfo(projectId);
+            }
+
+            if (openEpisodeButton) {
+                const episodeId = openEpisodeButton.dataset.openEpisode;
+                const project = ProjectController.getCurrentProject();
+
+                if (!project) {
+                    return;
+                }
+
+                ProjectController.openProject(
+                    project.id,
+                    episodeId
+                );
+            }
 
             if (openProjectButton) {
                 const projectId = openProjectButton.dataset.openProject;
@@ -193,6 +231,9 @@ const App = {
             const storyBgInput = event.target.closest("[data-story-bg-input]");
             const twitterImageInput = event.target.closest("[data-twitter-image-input]");
             const twitterPostSelect = event.target.closest("[data-twitter-post-input]");
+            const characterAvatarInput = event.target.closest("#characterAvatar");
+            const editCharacterButton = event.target.closest("[data-edit-character]");
+            const deleteCharacterButton = event.target.closest("[data-delete-character]");
 
             if (checkbox) {
                 const blockId = checkbox.dataset.blockCheck;
@@ -284,11 +325,63 @@ const App = {
 
                 EditorController.saveTwitterPostImage(blockId, postId, file);
             }
+
+            if (characterAvatarInput) {
+                const file = characterAvatarInput.files[0];
+                CharacterController.saveAvatar(file);
+            }
+
+            if (editCharacterButton) {
+                const characterId = editCharacterButton.dataset.editCharacter;
+
+                CharacterController.editCharacter(characterId);
+            }
+
+            if (deleteCharacterButton) {
+                const characterId = deleteCharacterButton.dataset.deleteCharacter;
+
+                CharacterController.deleteCharacter(characterId);
+            }
         });
 
         document.getElementById("openTemplateMenuButton"),addEventListener("click", () => {
             const panel = document.getElementById("templateMenuPanel");
             panel.classList.toggle("is-open");
+        });
+
+        document.getElementById("openEditorButton").addEventListener("click", () => {
+            const project = ProjectController.getCurrentProject();
+            
+            if (!project) {
+                return;
+            }
+
+            const firstEpisode = project.episodes?.[0];
+
+            if (!firstEpisode) {
+                return;
+            }
+
+            ProjectController.openProject(project.id, firstEpisode.id);
+        });
+
+        document.getElementById("openCharacterButton").addEventListener("click", () => {
+            CharacterController.renderCharacterList();
+            UI.showPage(UI.pages.character);
+        });
+
+        document.getElementById("backToProjectInfoButton").addEventListener("click", () => {
+            const project = ProjectController.getCurrentProject();
+
+            if (!project) {
+                return;
+            }
+
+            ProjectController.openProjectInfo(project.id);
+        });
+
+        document.getElementById("characterForm").addEventListener("submit", (event) => {
+            CharacterController.saveCharacter(event);
         });
     },
 

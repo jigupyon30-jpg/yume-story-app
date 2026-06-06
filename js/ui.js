@@ -4,7 +4,9 @@ const UI = {
     pages: {
         list: "projectListPage",
         create: "projectCreatePage",
-        detail: "projectDetailPage"
+        info: "projectInfoPage",
+        detail: "projectDetailPage",
+        character: "characterPage"
     },
 
     // 指定した画面だけ表示する

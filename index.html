@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex,nofollow">
     <link rel="stylesheet" href="./css/base.css">
     <link rel="stylesheet" href="./css/layout.css">
     <link rel="stylesheet" href="./css/components.css">
@@ -78,6 +79,153 @@
 
                     <button class="button button--primary" type="submit">保存する</button>
                 </form>
+            </section>
+
+            <!-- 作品詳細ページ-->
+            <section class="page" id="projectInfoPage">
+                <div class="page-head">
+                    <div>
+                        <p class="page-head__label" id="infoGenre">Genre</p>
+                        <h2 class="page-head__title" id="infoTitle">作品タイトル</h2>
+                        <p class="page-head__memo" id="infoMemo"></p>
+                    </div>
+
+                    <button class="button button--ghost" data-back-to-list>
+                        作品一覧へ
+                    </button>
+                </div>
+
+                <div class="project-info-card">
+                    <div class="project-info-card__main">
+                        <p class="project-info-card__label">Story Detail</p>
+                        <h3 id="infoCardTitle">作品タイトル</h3>
+                        <p id="infoCardMemo">あらすじメモ</p>
+                    </div>
+
+                    <div class="project-info-stats">
+                        <div class="project-info-stat">
+                            <span id="infoBlockCount">0</span>
+                            <p>ブロック</p>
+                        </div>
+
+                        <div class="project-info-stat">
+                            <span id="infoCharacterCount">0</span>
+                            <p>キャラ</p>
+                        </div>
+
+                        <div class="project-info-stat">
+                            <span id="infoRelationshipCount">0</span>
+                            <p>関係性</p>
+                        </div>
+                    </div>
+
+                    <div class="project-info-actions">
+                        <button class="button button--primary" id="openEditorButton">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            <span>本文を書く</span>
+                        </button>
+
+                        <button class="button button--ghost" id="openCharacterButton">
+                            <i class="fa-solid fa-user"></i>
+                            <span>キャラ管理</span>
+                        </button>
+                    </div>
+
+                    <div class="episode-section">
+                        <div class="episode-section__head">
+                            <h3>お話一覧</h3>
+
+                            <button class="button button--primary" id="createEpisodeButton">
+                                <i class="fa-solid fa-plus"></i>
+                                <span>新しい話</span>
+                            </button>
+                        </div>
+
+                        <div id="episodeList"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- キャラクター管理画面 -->
+            <section class="page" id="characterPage">
+                <div class="page-head">
+                    <div>
+                        <p class="page-head__label">Character</p>
+                        <h2 class="page-head__title">キャラクター</h2>
+                        <p class="page-head__memo">SNSブロックで使う名前・ユーザー名を登録できます。</p>
+                    </div>
+
+                    <button class="button button--ghost" id="backToProjectInfoButton">
+                        作品詳細へ
+                    </button>
+                </div>
+
+                <form class="form-card" id="characterForm">
+                    <input type="hidden" id="characterId">
+                    <label class="form-field">
+                        <span>名前</span>
+                        <input type="text" id="characterName" placeholder="例：草川まりあ" required>
+                    </label>
+
+                    <label class="form-field">
+                        <span>役割</span>
+                        <select id="characterRole">
+                            <option value="主人公">主人公</option>
+                            <option value="相手役">相手役</option>
+                            <option value="メンバー">メンバー</option>
+                            <option value="友達">友達</option>
+                            <option value="公式アカウント">公式アカウント</option>
+                            <option value="オタク">オタク</option>
+                            <option value="その他">その他</option>
+                        </select>
+                    </label>
+
+                    <label class="form-field">
+                        <span>アイコン画像</span>
+                        <input type="file" id="characterAvatar" accept="image/*">
+                    </label>
+
+                    <div class="character-avatar-preview" id="characterAvatarPreview"></div>
+
+                    <div class="sns-form-grid">
+                        <label class="form-field">
+                            <span>Instagram表示名</span>
+                            <input type="text" id="characterInstagramName" placeholder="例：草川まりあ">
+                        </label>
+
+                        <label class="form-field">
+                            <span>Instagramユーザー名</span>
+                            <input type="text" id="characterInstagramUsername" placeholder="例：kusakawa_milk">
+                        </label>
+
+                        <label class="form-field">
+                            <span>Twitter / X表示名</span>
+                            <input type="text" id="characterTwitterName" placeholder="例：M!LK">
+                        </label>
+
+                        <label class="form-field">
+                            <span>Twitter / Xユーザー名</span>
+                            <input type="text" id="characterTwitterUsername" placeholder="例：milk_official">
+                        </label>
+
+                        <label class="form-field">
+                            <span>TikTokユーザー名</span>
+                            <input type="text" id="characterTikTokUsername" placeholder="例：milk_official">
+                        </label>
+
+                        <label class="form-field">
+                            <span>LINE表示名</span>
+                            <input type="text" id="characterLineName" placeholder="例：柔太朗">
+                        </label>
+                    </div>
+
+                    <button class="button button--primary" type="submit">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span>保存する</span>
+                    </button>
+                </form>
+
+                <div class="character-list" id="characterList"></div>
             </section>
 
             <!-- 作品詳細・本文エディタ画面 -->
@@ -201,6 +349,8 @@
     <script src="./js/templates.js"></script>
     <script src="./js/ui.js"></script>
     <script src="./js/project.js"></script>
+    <script src="./js/episode.js"></script>
+    <script src="./js/character.js"></script>
     <script src="./js/editor.js"></script>
     <script src="./js/app.js"></script>
 </body>

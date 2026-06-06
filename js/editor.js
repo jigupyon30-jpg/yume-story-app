@@ -2,10 +2,9 @@
 // 後からLINE/インスタ/ニュースブロックもここに足していく
 const EditorController = {
     // ブロック一覧を描画する
-    renderBlocks(project) {
+    renderBlocks(episode) {
         const blockList = document.getElementById("blockList");
-
-        if (!project.blocks || project.blocks.length === 0) {
+        if (!episode || !episode.blocks || episode.blocks.length === 0) {
             blockList.innerHTML = `
                 <div class="empty">
                     まだ本文がありません。<br>
@@ -15,7 +14,7 @@ const EditorController = {
             return;
         }
 
-        blockList.innerHTML = project.blocks
+        blockList.innerHTML = episode.blocks
             .map((block) => {
                 if (block.type === "text") {
                     return this.createTextBlockHtml(block);
@@ -52,8 +51,6 @@ const EditorController = {
                 return "";
             })
             .join("");
-
-            this.fillTextareaValues(project);
     },
 
     // 本文ブロックのHTMLを作る
@@ -288,11 +285,11 @@ const EditorController = {
     addInstagramDmMessage(blockId) {
         const project = ProjectController.getCurrentProject();
 
-        if (!project) {
+        if (!episode) {
             return;
         }
 
-        project.blocks = project.blocks.map((block) => {
+        episode.blocks = episode.blocks.map((block) => {
             if (block.id === blockId) {
                 const messages = block.messages || [];
 
@@ -327,11 +324,11 @@ const EditorController = {
     updateInstagramDmMessage(blockId, messageId, fieldName, value, shouldRenderBlocks = false) {
         const project = ProjectController.getCurrentProject();
 
-        if (!project) {
+        if (!episode) {
             return;
         }
 
-        project.blocks = project.blocks.map((block) => {
+        episode.blocks = episode.blocks.map((block) => {
             if (block.id !== blockId) {
                 return block;
             }
@@ -366,11 +363,11 @@ const EditorController = {
     deleteInstagramDmMessage(blockId, messageId) {
         const project = ProjectController.getCurrentProject();
 
-        if (!project) {
+        if (!episode) {
             return;
         }
 
-        project.blocks = project.blocks.map((block) => {
+        episode.blocks = episode.blocks.map((block) => {
             if (block.id !== blockId) {
                 return block;
             }
@@ -563,9 +560,9 @@ const EditorController = {
     addInstagramStoryItem(blockId, type) {
         const project = ProjectController.getCurrentProject();
 
-        if (!project) return;
+        if (!episode) return;
 
-        project.blocks = project.blocks.map((block) => {
+        episode.blocks = episode.blocks.map((block) => {
             if (block.id !== blockId) return block;
 
             const item = {
@@ -601,9 +598,9 @@ const EditorController = {
     updateInstagramStoryItem(blockId, itemId, fieldName, value) {
         const project = ProjectController.getCurrentProject();
 
-        if (!project) return;
+        if (!episode) return;
 
-        project.blocks = project.blocks.map((block) => {
+        episode.blocks = episode.blocks.map((block) => {
             if (block.id !== blockId) return block;
 
             return {
@@ -635,9 +632,9 @@ const EditorController = {
     deleteInstagramStoryItem(blockId, itemId) {
         const project = ProjectController.getCurrentProject();
 
-        if (!project) return;
+        if (!episode) return;
 
-        project.blocks = project.blocks.map((block) => {
+        episode.blocks = episode.blocks.map((block) => {
             if (block.id !== blockId) return block;
 
             return {
@@ -765,9 +762,9 @@ const EditorController = {
     addTwitterPost(blockId) {
         const project = ProjectController.getCurrentProject();
 
-        if (!project) return;
+        if (!episode) return;
 
-        project.blocks = project.blocks.map((block) => {
+        episode.blocks = episode.blocks.map((block) => {
             if (block.id !== blockId) return block;
 
             return {
@@ -801,9 +798,9 @@ const EditorController = {
     updateTwitterPost(blockId, postId, fieldName, value) {
         const project = ProjectController.getCurrentProject();
 
-        if (!project) return;
+        if (!episode) return;
 
-        project.blocks = project.blocks.map((block) => {
+        episode.blocks = episode.blocks.map((block) => {
             if (block.id !== blockId) return block;
 
             return {
@@ -829,9 +826,9 @@ const EditorController = {
     deleteTwitterPost(blockId, postId) {
         const project = ProjectController.getCurrentProject();
 
-        if (!project) return;
+        if (!episode) return;
 
-        project.blocks = project.blocks.map((block) => {
+        episode.blocks = episode.blocks.map((block) => {
             if (block.id !== blockId) return block;
 
             return {
@@ -959,33 +956,36 @@ const EditorController = {
     // 本文ブロックを追加する
     addBlock(type) {
         const project = ProjectController.getCurrentProject();
+        const episode = ProjectController.getCurrentEpisode();
 
-        if (!project) {
+        if (!project || !episode) {
             return;
         }
 
         const newBlock = DataFactory.createBlockByType(type);
 
-        if (!newBlock) {
-            return;
-        }
-
-        project.blocks.push(newBlock);
+        episode.blocks.push(newBlock);
 
         ProjectController.updateCurrentProject(project);
-        this.renderBlocks(project);
-        this.renderPreview(project);
+
+        const updatedEpisode = ProjectController.getCurrentEpisode();
+
+        console.log("追加後のepisode", updatedEpisode);
+
+        this.renderBlocks(updatedEpisode);
+        this.renderPreview(updatedEpisode);
     },
 
     // 本文ブロックの内容を保存する
     updateBlockField(blockId, fieldName, value) {
         const project = ProjectController.getCurrentProject();
+        const episode = ProjectController.getCurrentEpisode();
 
-        if (!project) {
+        if (!project || !episode) {
             return;
         }
 
-        project.blocks = project.blocks.map((block) => {
+        episode.blocks = episode.blocks.map((block) => {
             if (block.id === blockId) {
                 return {
                     ...block,
@@ -997,14 +997,24 @@ const EditorController = {
         });
 
         ProjectController.updateCurrentProject(project);
-        this.renderPreview(project);
+
+        const updatedEpisode = ProjectController.getCurrentEpisode();
+        this.renderPreview(updatedEpisode);
     },
 
     // プレビュー全体を描画する
-    renderPreview(project) {
+    renderPreview(episode) {
+        console.log("renderPreview", episode);
         const previewList = document.getElementById("previewList");
 
-        if (!project || !project.blocks || project.blocks.length === 0) {
+        console.log("previewList", previewList);
+
+        if (!previewList) {
+            console.warn("previewList が見つかりません");
+            return;
+        }
+
+        if (!episode || !episode.blocks || episode.blocks.length === 0) {
             previewList.innerHTML = `
                 <div class="empty">
                     まだプレビューできるブロックがありません。
@@ -1013,7 +1023,7 @@ const EditorController = {
             return;
         }
 
-        previewList.innerHTML = project.blocks
+        previewList.innerHTML = episode.blocks
             .map((block) => {
                 if (block.type === "text") {
                     return this.createTextPreviewHtml(block);
@@ -1229,10 +1239,10 @@ const EditorController = {
             const project =
                 ProjectController.getCurrentProject();
 
-            if (!project) return;
+            if (!episode) return;
 
-            project.blocks =
-                project.blocks.map((block) => {
+            episode.blocks =
+                episode.blocks.map((block) => {
                     if (block.id === blockId) {
                         return {
                             ...block,
@@ -1711,29 +1721,53 @@ const EditorController = {
         }
 
         const project = ProjectController.getCurrentProject();
+        const episode = ProjectController.getCurrentEpisode();
         
-        if (!project) {
+        if (!project || !episode) {
             return;
         }
 
-        project.blocks = project.blocks.filter((block) => block.id !==blockId);
+        episode.blocks = episode.blocks.filter((block) => block.id !==blockId);
 
         ProjectController.updateCurrentProject(project);
-        this.renderBlocks(project);
-        this.renderPreview(project);
+        this.renderBlocks(episode);
+        this.renderPreview(episode);
     },
 
     fillTextareaValues(project) {
-        project.blocks.forEach((block) => {
-            Object.keys(block).forEach((fieldName) => {
-                const textarea = document.querySelector(
-                    `textarea[data-block-input="${block.id}"][data-field-name="${fieldName}"]`
-                );
+        if (!episode || !episode.blocks) {
+            return;
+        }
 
-                if (textarea) {
-                    textarea.value = block[fieldName] || "";
-                }
-            });
+        episode.blocks.forEach((block) => {
+            const textarea = document.querySelector(
+                `[data-block-input="${block.id}"]`
+            );
+
+            if (!textarea) {
+                return;
+            }
+
+            if (block.type === "text") {
+                textarea.value = block.content || "";
+            }
+
+            if (block.type === "line") {
+                textarea.value = block.messages || "";
+            }
+
+            if (block.type === "instagram") {
+                textarea.value = block.caption || "";
+            }
+
+            if (block.type === "news") {
+                textarea.value = block.body || "";
+            }
+
+            if (block.type === "wiki") {
+                // Wikiは複数textareaがあるのでここでは触らない
+                return;
+            }
         });
     },
 
@@ -1741,7 +1775,7 @@ const EditorController = {
     addTemplateBlocks(templateId) {
         const project = ProjectController.getCurrentProject();
 
-        if (!project) {
+        if (!episode) {
             return;
         }
 
@@ -1758,8 +1792,8 @@ const EditorController = {
             return;
         }
 
-        project.blocks = [
-            ...(project.blocks || []),
+        episode.blocks = [
+            ...(episode.blocks || []),
             ...templateBlocks
         ];
 
