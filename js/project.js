@@ -115,7 +115,10 @@ const ProjectController = {
                 return `
                     <article class="episode-card">
                         <div class="episode-card__content">
-                            <h4>${UI.escapeHtml(episode.title)}</h4>
+                            <label class="episode-title-field">
+                                <span>タイトル</span>
+                                <input type="text" value="${UI.escapeHtml(episode.title || "")}" data-episode-title-input="${episode.id}" placeholder="例：放課後、君からのDM">
+                            </label>
                             <p>ブロック数：${episode.blocks?.length || 0}</p>
                         </div>
 

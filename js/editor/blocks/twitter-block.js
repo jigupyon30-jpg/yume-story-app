@@ -9,6 +9,7 @@ Object.assign(EditorController, {
                     <div class="story-block__actions">
                         <button type="button" class="story-block__move" data-move-block-up="${block.id}">↑</button>
                         <button type="button" class="story-block__move" data-move-block-down="${block.id}">↓</button>
+                        <button type="button" class="story-block__duplicate" data-duplicate-block="${block.id}">複製</button>
                         <button type="button" class="story-block__delete" data-delete-block="${block.id}">削除</button>
                     </div>
                     <span class="story-block__type">

@@ -50,5 +50,39 @@ const EpisodeController = {
 
         ReaderController.render(episode);
         UI.showPage(UI.pages.reader);
-    }
+    },
+
+    // エピソードタイトルを更新する
+    updateEpisodeTitle(episodeId, title) {
+        const projectId = ProjectController.currentProjectId;
+        
+        if (!projectId) return;
+
+        const projects = StorageService.getProjects();
+
+        const nextProjects = projects.map((project) => {
+            if (project.id !== projectId) {
+                return project;
+            }
+
+            return {
+                ...project,
+                updatedAt: new Date().toISOString(),
+                episodes: (project.episodes || []).map((episode) => {
+                    if (episode.id !== episodeId) {
+                        return episode;
+                    }
+
+                    return {
+                        ...episode,
+                        title: title.trim() || "無題",
+                        updatedAt: new Date().toISOString()
+                    };
+                })
+            };
+        });
+
+        StorageService.saveProjects(nextProjects);
+        ProjectController.openProjectInfo(projectId);
+    },
 };

@@ -51,6 +51,14 @@ Object.assign(EditorController, {
                         };
                     } 
 
+                    if (blockType === "instagramLive") {
+                        return {
+                            ...block,
+                            characterId: character.id,
+                            username: character.instagramUsername || character.name
+                        };
+                    }
+
                     if (blockType === "line") {
                         return {
                             ...block,
@@ -66,7 +74,7 @@ Object.assign(EditorController, {
                             partnerName: character.instagramName || character.name,
                             partnerUsername: character.instagramUsername || ""
                         };
-                    } 
+                    }
 
                     return block;
                 })

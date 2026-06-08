@@ -62,8 +62,11 @@ const App = {
         });
 
         document.addEventListener("click", (event) => {
+            const addLiveMessageButton = event.target.closest("[data-add-live-message]");
+            const deleteLiveMessageButton = event.target.closest("[data-delete-live-message]");
             const moveBlockUpButton = event.target.closest("[data-move-block-up]");
             const moveBlockDownButton = event.target.closest("[data-move-block-down]");
+            const duplicateBlockButton = event.target.closest("[data-duplicate-block]");
             const readEpisodeButton = event.target.closest("[data-read-episode]");
             const openProjectInfoButton = event.target.closest("[data-open-project-info]");
             const openEpisodeButton = event.target.closest("[data-open-episode]");
@@ -82,6 +85,19 @@ const App = {
             const deleteLineImageButton = event.target.closest("[data-delete-line-image]");
             const addTemplateButton = event.target.closest("[data-add-template]");
 
+
+            if (addLiveMessageButton) {
+                const blockId = addLiveMessageButton.dataset.addLiveMessage;
+                EditorController.addInstagramLiveMessage(blockId);
+            }
+
+            if (deleteLiveMessageButton) {
+                const blockId = deleteLiveMessageButton.dataset.deleteLiveMessage;
+                const messageId = deleteLiveMessageButton.dataset.liveMessageId;
+
+                EditorController.deleteInstagramLiveMessage(blockId, messageId);
+            }
+
             if (moveBlockUpButton) {
                 const blockId = moveBlockUpButton.dataset.moveBlockUp;
                 EditorController.moveBlockUp(blockId);
@@ -90,6 +106,11 @@ const App = {
             if (moveBlockDownButton) {
                 const blockId = moveBlockDownButton.dataset.moveBlockDown;
                 EditorController.moveBlockDown(blockId);
+            }
+
+            if (duplicateBlockButton) {
+                const blockId = duplicateBlockButton.dataset.duplicateBlock;
+                EditorController.duplicateBlock(blockId);
             }
 
             if (openProjectInfoButton) {
@@ -229,6 +250,7 @@ const App = {
                 return;
             }
             const dmTextInput = event.target.closest("[data-dm-message-input]");
+            const liveMessageInput = event.target.closest("[data-live-message-input]");
             const input = event.target.closest("[data-block-input]");
 
             if (dmTextInput) {
@@ -248,6 +270,17 @@ const App = {
                 return;
             }
 
+            if (liveMessageInput) {
+                const blockId = liveMessageInput.dataset.liveMessageInput;
+                const messageId = liveMessageInput.dataset.liveMessageId;
+                const fieldName = liveMessageInput.dataset.fieldName;
+                const value = liveMessageInput.value;
+
+                EditorController.updateInstagramLiveMessage(blockId,messageId,fieldName,value);
+
+                return;
+            }
+
             if (!input) {
                 return;
             }
@@ -261,6 +294,7 @@ const App = {
 
         // チェックボックスの内容を保存
         document.addEventListener("change", (event) => {
+            const episodeTitleInput = event.target.closest("[data-episode-title-input]");
             const checkbox = event.target.closest("[data-block-check]");
             const imageInput = event.target.closest("[data-line-image-input]");
             const instagramImageInput = event.target.closest("[data-instagram-image-input]");
@@ -268,6 +302,7 @@ const App = {
             const wikiImageInput = event.target.closest("[data-wiki-image-input]");
             const dmStoryImageInput = event.target.closest("[data-dm-story-image-input]");
             const storyBgInput = event.target.closest("[data-story-bg-input]");
+            const liveMessageSelect = event.target.closest("select[data-live-message-input]");
             const twitterImageInput = event.target.closest("[data-twitter-image-input]");
             const twitterPostSelect = event.target.matches("select[data-twitter-post-input]")
                 ? event.target
@@ -275,6 +310,13 @@ const App = {
             const characterAvatarInput = event.target.closest("#characterAvatar");
             const blockCharacterSelect = event.target.closest("[data-block-character-select]");
             const twitterCharacterSelect = event.target.closest("[data-twitter-character-select]");
+
+            if (episodeTitleInput) {
+                const episodeId = episodeTitleInput.dataset.episodeTitleInput;
+                const title = episodeTitleInput.value;
+
+                EpisodeController.updateEpisodeTitle(episodeId, title);
+            }
 
             if (checkbox) {
                 const blockId = checkbox.dataset.blockCheck;
@@ -309,6 +351,15 @@ const App = {
                 const file = dmStoryImageInput.files[0];
 
                 EditorController.saveInstagramDmStoryImage(blockId, messageId, file);
+            }
+            
+            if (liveMessageSelect) {
+                const blockId = liveMessageSelect.dataset.liveMessageInput;
+                const messageId = liveMessageSelect.dataset.liveMessageId;
+                const fieldName = liveMessageSelect.dataset.fieldName;
+                const value = liveMessageSelect.value;
+
+                EditorController.updateInstagramLiveMessage(blockId, messageId, fieldName, value);
             }
 
             if (newsImageInput) {

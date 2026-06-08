@@ -92,11 +92,66 @@
     display: grid;
     gap: var(--space-md);
 }
+.block-menu {
+    position: relative;
+}
+.block-menu__panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 20;
+    display: none;
+    min-width: 190px;
+    padding: 8px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: 0 14px 28px var(--color-shadow);
+}
+.block-menu__panel.is-open {
+    display: grid;
+    gap: 4px;
+}
+.block-menu__item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    color: var(--color-text);
+    background: transparent;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 700;
+}
+.block-menu__item:hover {
+    background: var(--color-surface-soft);
+}
 .story-block {
     padding: var(--space-md);
     background: var(--color-surface-soft);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
+}
+.story-block__fields {
+    display: grid;
+    gap: 10px;
+}
+.story-block__fields input,
+.story-block__fields textarea {
+    width: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    background: #fff;
+}
+.story-block__fields textarea {
+    min-height: 110px;
+}
+.story-block__small-textarea {
+    min-height: 70px;
 }
 .story-block__head {
     display: flex;
@@ -1174,6 +1229,186 @@
     flex-wrap: wrap;
     gap: 8px;
 }
+.episode-title-field {
+    display: grid;
+    gap: 6px;
+}
+.episode-title-field span {
+    color: var(--color-text-muted);
+}
+.episode-title-field input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    color: var(--color-text);
+    font-size: 15px;
+    font-weight: 700;
+}
+.episode-title-field input:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 4px;
+    border-radius: 8px;
+}
+
+/* インライ */
+.live-comment-editor {
+    display: grid;
+    gap: 10px;
+}
+.live-comment-editor__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.live-comment-editor__head span {
+    font-size: 13px;
+    font-weight: 700;
+}
+.live-comment-list {
+    display: grid;
+    gap: 10px;
+}
+.live-comment-form {
+    display: grid;
+    gap: 8px;
+    padding: 12px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+}
+.live-comment-form__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.live-comment-form__head strong {
+    font-size: 13px;
+}
+.live-comment-form__head button {
+    border: none;
+    background: transparent;
+    color: var(--color-text-muted);
+    font-size: 12px;
+}
+.live-comment-form__grid {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 8px;
+}
+.preview-instagram-live {
+    position: relative;
+    overflow: hidden;
+    width: min(100%, 360px);
+    aspect-ratio: 9 / 16;
+    margin: 0 auto;
+    color: #fff;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.45),rgba(0, 0, 0, 0.08) 35%,rgba(0, 0, 0, 0.55)),
+    linear-gradient(135deg, #f7b4c8, #7b6df6);
+    border-radius: 28px;
+}
+.preview-instagram-live__top {
+    position: absolute;
+    z-index: 2;
+    top: 14px;
+    left: 14px;
+    right: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.preview-instagram-live__profile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.preview-instagram-live__avatar {
+    width: 30px;
+    height: 30px;
+    background: rgba(255,255,255,0.8);
+    border: 2px solid #fff;
+    border-radius: 50%;
+}
+.preview-instagram-live__profile strong {
+    font-size: 13px;
+}
+.preview-instagram-live__profile span {
+    padding: 3px 7px;
+    background: #ff2f6d;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 800;
+}
+.preview-instagram-live__screen {
+    position: absolute;
+    inset: 0;
+}
+.preview-instagram-live__notice {
+    position: absolute;
+    top: 72px;
+    left: 50%;
+    width: max-content;
+    transform: translateX(-50%);
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.36);
+    border-radius: 999px;
+    font-size: 12px;
+    line-height: 1.5;
+}
+.preview-instagram-live__host {
+    padding: 6px 8px;
+    background: rgba(0, 0, 0, 0.28);
+    border-radius: 12px;
+}
+.preview-instagram-live__host strong {
+    color: rgba(255,255,255,0.95);
+}
+.preview-instagram-live__host span {
+    color: rgba(255,255,255,0.9);
+}
+.preview-instagram-live__comments {
+    position: absolute;
+    z-index: 2;
+    left: 14px;
+    right: 14px;
+    bottom: 62px;
+    display: grid;
+    gap: 6px;
+}
+.preview-instagram-live__comments p {
+    margin: 0;
+    color: rgba(255,255,255,0.72);
+    font-size: 11px;
+    line-height: 1.45;
+}
+.preview-instagram-live__comments strong {
+    margin-right: 6px;
+    color: rgba(255,255,255,0.86);
+    font-weight: 700;
+}
+.preview-instagram-live__comments span {
+    color: rgba(255,255,255,0.68);
+}
+.preview-instagram-live__bottom {
+    position: absolute;
+    z-index: 2;
+    left: 14px;
+    right: 14px;
+    bottom: 16px;
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 12px;
+}
+.preview-instagram-live__bottom span {
+    padding: 10px 12px;
+    color: rgba(255,255,255,0.7);
+    border: 1px solid rgba(255,255,255,0.72);
+    border-radius: 999px;
+    font-size: 12px;
+}
+.preview-instagram-live__bottom i {
+    font-size: 18px;
+}
 
 @media (max-width: 640px) {
     .preview-wiki__layout {
@@ -1203,6 +1438,9 @@
     }
     .episode-card__actions .button {
         flex: 1;
+    }
+    .live-comment-form__grid {
+        grid-template-columns: 1fr;
     }
 }
 

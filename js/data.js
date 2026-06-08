@@ -111,6 +111,30 @@ const DataFactory = {
         };
     },
 
+    // インライブロック
+    createInstagramLiveBlock() {
+        return {
+            id: this.createId("block"),
+            type: "instagramLive",
+            characterId: "",
+            username: "kusakawa_milk",
+            messages: [
+                {
+                    id: this.createId("liveMessage"),
+                    username: "host",
+                    text: "みんな来てくれてありがとう〜！"
+                },
+                {
+                    id: this.createId("liveMessage"),
+                    type: "viewer",
+                    username: "aaa",
+                    text: "今日ビジュ良すぎる"
+                }
+            ],
+            createdAt: new Date().toISOString()
+        };
+    },
+
     // Twitter / Xブロック
     createTwitterBlock() {
         return {
@@ -194,6 +218,9 @@ const DataFactory = {
 
         if (type === "instagramStory") {
             return this.createInstagramStoryBlock();
+        }
+        if (type === "instagramLive") {
+            return this.createInstagramLiveBlock();
         }
         if (type === "twitter") {
             return this.createTwitterBlock();

@@ -71,6 +71,14 @@ const ReaderController = {
             `;
         }
 
+        if (block.type === "instagramLive") {
+            return `
+                <section class="reader-block reader-sns">
+                    ${EditorController.createInstagramLivePreviewHtml(block)}
+                </section>
+            `;
+        }
+
         if (block.type === "twitter") {
             return `
                 <section class="reader-block reader-sns reader-sns--wide">

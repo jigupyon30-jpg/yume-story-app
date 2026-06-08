@@ -158,5 +158,35 @@ Object.assign(EditorController, {
         });
 
         EpisodeUpdateService.rerender();
-    }
+    },
+
+    // ブロックを複製
+    duplicateBlock(blockId) {
+        EpisodeUpdateService.update((episode) => {
+            const blocks = [...(episode.blocks || [])];
+
+            const index = blocks.findIndex((block) => {
+                return block.id === blockId;
+            });
+
+            if (index === -1) {
+                return episode;
+            }
+
+            const duplicateBlock = {
+                ...structuredClone(blocks[index]),
+                id: DataFactory.createId("block"),
+                createdAt: new Date().toISOString()
+            };
+
+            blocks.splice(index + 1, 0, duplicateBlock);
+
+            return {
+                ...episode,
+                blocks
+            };
+        });
+
+        EpisodeUpdateService.rerender();
+    },
 });

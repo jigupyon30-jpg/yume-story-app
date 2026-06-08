@@ -27,6 +27,8 @@ Object.assign(EditorController, {
 
                 if (block.type === "instagramStory") return this.createInstagramStoryBlockHtml(block);
 
+                if (block.type === "instagramLive") return this.createInstagramLiveBlockHtml(block);
+
                 if (block.type === "twitter") return this.createTwitterBlockHtml(block);
 
                 if (block.type === "news") return this.createNewsBlockHtml(block);
