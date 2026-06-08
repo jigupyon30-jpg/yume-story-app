@@ -104,6 +104,18 @@
     justify-content: space-between;
     margin-bottom: var(--space-sm);
 }
+.story-block__actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+.story-block__move {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
 .story-block__type {
     color: var(--color-primary-dark);
     font-size: 12px;
@@ -1157,6 +1169,11 @@
     display: flex;
     gap: 8px;
 }
+.episode-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
 
 @media (max-width: 640px) {
     .preview-wiki__layout {
@@ -1176,6 +1193,16 @@
     }
     .character-card__actions {
         grid-column: 1 / -1;
+    }
+    .episode-card {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+    .episode-card__actions {
+        width: 100%;
+    }
+    .episode-card__actions .button {
+        flex: 1;
     }
 }
 

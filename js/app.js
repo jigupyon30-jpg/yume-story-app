@@ -40,6 +40,16 @@ const App = {
             panel.classList.toggle("is-open");
         });
 
+        document.getElementById("backToEpisodeListButton").addEventListener("click", () => {
+            const project = ProjectController.getCurrentProject();
+
+            if (!project) {
+                return;
+            }
+
+            ProjectController.openProjectInfo(project.id);
+        });
+
         // プレビューを手更新
         document.getElementById("refreshPreviewButton").addEventListener("click", () => {
             const episode = ProjectController.getCurrentEpisode();
@@ -52,9 +62,14 @@ const App = {
         });
 
         document.addEventListener("click", (event) => {
+            const moveBlockUpButton = event.target.closest("[data-move-block-up]");
+            const moveBlockDownButton = event.target.closest("[data-move-block-down]");
+            const readEpisodeButton = event.target.closest("[data-read-episode]");
             const openProjectInfoButton = event.target.closest("[data-open-project-info]");
             const openEpisodeButton = event.target.closest("[data-open-episode]");
             const openProjectButton = event.target.closest("[data-open-project]");
+            const editCharacterButton = event.target.closest("[data-edit-character]");
+            const deleteCharacterButton = event.target.closest("[data-delete-character]");
             const deleteProjectButton = event.target.closest("[data-delete-project]");
             const deleteBlockButton = event.target.closest("[data-delete-block]");
             const addBlockButton = event.target.closest("[data-add-block-type]");
@@ -66,6 +81,16 @@ const App = {
             const deleteDmMessageButton = event.target.closest("[data-delete-dm-message]");
             const deleteLineImageButton = event.target.closest("[data-delete-line-image]");
             const addTemplateButton = event.target.closest("[data-add-template]");
+
+            if (moveBlockUpButton) {
+                const blockId = moveBlockUpButton.dataset.moveBlockUp;
+                EditorController.moveBlockUp(blockId);
+            }
+
+            if (moveBlockDownButton) {
+                const blockId = moveBlockDownButton.dataset.moveBlockDown;
+                EditorController.moveBlockDown(blockId);
+            }
 
             if (openProjectInfoButton) {
                 const projectId = openProjectInfoButton.dataset.openProjectInfo;
@@ -84,6 +109,11 @@ const App = {
                     project.id,
                     episodeId
                 );
+            }
+
+            if (readEpisodeButton) {
+                const episodeId = readEpisodeButton.dataset.readEpisode;
+                EpisodeController.openEpisodeReader(episodeId);
             }
 
             if (openProjectButton) {
@@ -149,7 +179,7 @@ const App = {
                 const blockId = deleteTwitterPostButton.dataset.deleteTwitterPost;
                 const postId = deleteTwitterPostButton.dataset.twitterPostId;
 
-                EditorController.deleteTwitterPostButton(blockId, postId);
+                EditorController.deleteTwitterPost(blockId, postId);
             }
 
             if (addTemplateButton) {
@@ -158,6 +188,18 @@ const App = {
 
                 EditorController.addTemplateBlocks(templateId);
                 panel.classList.remove("is-open");
+            }
+
+            if (editCharacterButton) {
+                const characterId = editCharacterButton.dataset.editCharacter;
+
+                CharacterController.editCharacter(characterId);
+            }
+
+            if (deleteCharacterButton) {
+                const characterId = deleteCharacterButton.dataset.deleteCharacter;
+
+                CharacterController.deleteCharacter(characterId);
             }
         });
 
@@ -177,19 +219,17 @@ const App = {
 
             const twitterPostInput = event.target.closest("[data-twitter-post-input]");
 
-            if (twitterPostInput) {
+            if (twitterPostInput && twitterPostInput.tagName !== "SELECT") {
                 const blockId = twitterPostInput.dataset.twitterPostInput;
-                const postId = twitterPostInput.dataset.twitterPostInput;
+                const postId = twitterPostInput.dataset.twitterPostId;
                 const fieldName = twitterPostInput.dataset.fieldName;
                 const value = twitterPostInput.value;
 
                 EditorController.updateTwitterPost(blockId, postId, fieldName, value);
                 return;
             }
-
-            const input = event.target.closest("[data-block-input]");
-
             const dmTextInput = event.target.closest("[data-dm-message-input]");
+            const input = event.target.closest("[data-block-input]");
 
             if (dmTextInput) {
                 const blockId = dmTextInput.dataset.dmMessageInput;
@@ -227,13 +267,14 @@ const App = {
             const newsImageInput = event.target.closest("[data-news-image-input]");
             const wikiImageInput = event.target.closest("[data-wiki-image-input]");
             const dmStoryImageInput = event.target.closest("[data-dm-story-image-input]");
-            const dmMessageInput = event.target.closest("[data-dm-message-input]");
             const storyBgInput = event.target.closest("[data-story-bg-input]");
             const twitterImageInput = event.target.closest("[data-twitter-image-input]");
-            const twitterPostSelect = event.target.closest("[data-twitter-post-input]");
+            const twitterPostSelect = event.target.matches("select[data-twitter-post-input]")
+                ? event.target
+                : null;
             const characterAvatarInput = event.target.closest("#characterAvatar");
-            const editCharacterButton = event.target.closest("[data-edit-character]");
-            const deleteCharacterButton = event.target.closest("[data-delete-character]");
+            const blockCharacterSelect = event.target.closest("[data-block-character-select]");
+            const twitterCharacterSelect = event.target.closest("[data-twitter-character-select]");
 
             if (checkbox) {
                 const blockId = checkbox.dataset.blockCheck;
@@ -260,15 +301,6 @@ const App = {
                     blockId,
                     file
                 );
-            }
-
-            if (dmMessageInput) {
-                const blockId = dmMessageInput.dataset.dmMessageInput;
-                const messageId = dmMessageInput.dataset.dmMessageId;
-                const fieldName = dmMessageInput.dataset.fieldName;
-                const value = dmMessageInput.value;
-
-                EditorController.updateInstagramDmMessage(blockId, messageId, fieldName, value, true);
             }
 
             if (dmStoryImageInput) {
@@ -309,13 +341,13 @@ const App = {
                 EditorController.saveInstagramStoryBackground(blockId, file);
             }
 
-            if (twitterPostSelect) {
+            if (twitterPostSelect && twitterPostSelect.dataset.twitterPostId) {
                 const blockId = twitterPostSelect.dataset.twitterPostInput;
                 const postId = twitterPostSelect.dataset.twitterPostId;
                 const fieldName = twitterPostSelect.dataset.fieldName;
                 const value = twitterPostSelect.value;
 
-                EditorController.updateTwitterPost(blockId, postId, fieldName, value, true);
+                EditorController.updateTwitterPost(blockId, postId, fieldName, value);
             }
 
             if (twitterImageInput) {
@@ -331,20 +363,25 @@ const App = {
                 CharacterController.saveAvatar(file);
             }
 
-            if (editCharacterButton) {
-                const characterId = editCharacterButton.dataset.editCharacter;
 
-                CharacterController.editCharacter(characterId);
+            if (blockCharacterSelect) {
+                const blockId = blockCharacterSelect.dataset.blockCharacterSelect;
+                const blockType = blockCharacterSelect.dataset.blockType;
+                const characterId = blockCharacterSelect.value;
+
+                EditorController.applyCharacterToBlock(blockId, blockType, characterId);
             }
 
-            if (deleteCharacterButton) {
-                const characterId = deleteCharacterButton.dataset.deleteCharacter;
+            if (twitterCharacterSelect) {
+                const blockId = twitterCharacterSelect.dataset.twitterCharacterSelect;
+                const postId = twitterCharacterSelect.dataset.twitterPostId;
+                const characterId = twitterCharacterSelect.value;
 
-                CharacterController.deleteCharacter(characterId);
+                EditorController.applyCharacterToTwitterPost(blockId, postId, characterId);
             }
         });
 
-        document.getElementById("openTemplateMenuButton"),addEventListener("click", () => {
+        document.getElementById("openTemplateMenuButton").addEventListener("click", () => {
             const panel = document.getElementById("templateMenuPanel");
             panel.classList.toggle("is-open");
         });
@@ -353,6 +390,16 @@ const App = {
             const project = ProjectController.getCurrentProject();
             
             if (!project) {
+                return;
+            }
+
+            const currentEpisode = ProjectController.getCurrentEpisode();
+
+            if (currentEpisode) {
+                ProjectController.openProject(
+                    project.id,
+                    currentEpisode.id
+                );
                 return;
             }
 

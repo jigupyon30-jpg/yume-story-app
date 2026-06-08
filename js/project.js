@@ -115,15 +115,21 @@ const ProjectController = {
                 return `
                     <article class="episode-card">
                         <div class="episode-card__content">
-                            <h4>${episode.title}</h4>
-
+                            <h4>${UI.escapeHtml(episode.title)}</h4>
                             <p>ブロック数：${episode.blocks?.length || 0}</p>
                         </div>
 
-                        <button class="button button--ghost" data-open-episode="${episode.id}">
-                            <i class="fa-solid fa-book-open"></i>
-                            <span>開く</span>
-                        </button>
+                        <div class="episode-card__actions">
+                            <button class="button button--ghost" data-read-episode="${episode.id}">
+                                <i class="fa-solid fa-book-open-reader"></i>
+                                <span>読む</span>
+                            </button>
+
+                            <button class="button button--primary" data-open-episode="${episode.id}">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                                <span>編集</span>
+                            </button>
+                        </div>
                     </article>
                 `;
             })
@@ -152,6 +158,8 @@ const ProjectController = {
 
         this.currentProjectId = normalizedProject.id;
         this.currentEpisodeId = episode.id;
+
+        console.log("currentEpisodeId", this.currentEpisodeId);
 
         StorageService.saveProjects(projects);
 

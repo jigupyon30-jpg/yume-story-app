@@ -50,6 +50,7 @@ const DataFactory = {
         return {
             id: this.createId("block"),
             type: "line",
+            partnerCharacterId: "",
             title: "LINE",
             partnerName: "",
             startTime: "22:00",
@@ -66,6 +67,7 @@ const DataFactory = {
         return {
             id: this.createId("block"),
             type: "instagram",
+            characterId: "",
             username: "",
             caption: "",
             likes: "",
@@ -75,11 +77,12 @@ const DataFactory = {
         };
     },
 
-    // インスタ投稿ブロック
+    // インスタDMブロック
     createInstagramDmBlock() {
         return {
             id: this.createId("block"),
             type: "instagramDm",
+            partnerCharacterId: "",
             partnerName: "",
             partnerUsername: "",
             isReadVisible: true,
@@ -117,6 +120,7 @@ const DataFactory = {
                 {
                     id: this.createId("tweet"),
                     accountType: "official",
+                    characterId: "",
                     displayName: "M!LK",
                     username: "milk_official",
                     text: "",

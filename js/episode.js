@@ -27,5 +27,28 @@ const EpisodeController = {
         ProjectController.openProjectInfo(
             projectId
         );
+    },
+
+    // 指定したエピソードを読むページで開く
+    openEpisodeReader(episodeId) {
+        const project = ProjectController.getCurrentProject();
+
+        if (!project) {
+            return;
+        }
+
+        const episode = (project.episodes || []).find((item) => {
+            return item.id === episodeId;
+        });
+
+        if (!episode) {
+            alert("お話が見つかりませんでした");
+            return;
+        }
+
+        ProjectController.currentEpisodeId = episode.id;
+
+        ReaderController.render(episode);
+        UI.showPage(UI.pages.reader);
     }
 };

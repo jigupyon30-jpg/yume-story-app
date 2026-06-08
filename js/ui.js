@@ -6,7 +6,8 @@ const UI = {
         create: "projectCreatePage",
         info: "projectInfoPage",
         detail: "projectDetailPage",
-        character: "characterPage"
+        character: "characterPage",
+        reader: "readerPage"
     },
 
     // 指定した画面だけ表示する

@@ -228,6 +228,23 @@
                 <div class="character-list" id="characterList"></div>
             </section>
 
+            <!-- お話単体 -->
+            <section class="page" id="readerPage">
+                <div class="page-head">
+                    <div>
+                        <p class="page-head__label" id="readerProjectTitle">作品タイトル</p>
+                        <h2 class="page-head__title" id="readerEpisodeTitle">第1話</h2>
+                        <p class="page-head__memo">保存したお話を読むページです。</p>
+                    </div>
+
+                    <button class="button button--ghost" id="backToEpisodeListButton">
+                        作品詳細へ
+                    </button>
+                </div>
+
+                <article class="reader-content" id="readerContent"></article>
+            </section>
+
             <!-- 作品詳細・本文エディタ画面 -->
             <section class="page" id="projectDetailPage">
                 <div class="page-head">
@@ -346,12 +363,31 @@
 
     <script src="./js/storage.js"></script>
     <script src="./js/data.js"></script>
-    <script src="./js/templates.js"></script>
     <script src="./js/ui.js"></script>
+
     <script src="./js/project.js"></script>
     <script src="./js/episode.js"></script>
     <script src="./js/character.js"></script>
-    <script src="./js/editor.js"></script>
+    <script src="./js/templates.js"></script>
+
+    <script src="./js/services/EpisodeUpdateService.js"></script>
+
+    <script src="./js/editor/editor.js"></script>
+    <script src="./js/editor/character-select.js"></script>
+    <script src="./js/editor/block-renderer.js"></script>
+    <script src="./js/editor/block-actions.js"></script>
+    <script src="./js/editor/preview-renderer.js"></script>
+
+    <script src="./js/editor/blocks/text-block.js"></script>
+    <script src="./js/editor/blocks/line-block.js"></script>
+    <script src="./js/editor/blocks/instagram-block.js"></script>
+    <script src="./js/editor/blocks/instagram-dm-block.js"></script>
+    <script src="./js/editor/blocks/instagram-story-block.js"></script>
+    <script src="./js/editor/blocks/twitter-block.js"></script>
+    <script src="./js/editor/blocks/news-block.js"></script>
+    <script src="./js/editor/blocks/wiki-block.js"></script>
+
+    <script src="./js/reader.js"></script>
     <script src="./js/app.js"></script>
 </body>
 </html>
