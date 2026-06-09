@@ -78,9 +78,9 @@ Object.assign(EditorController, {
                     <p class="preview-instagram__likes">${UI.escapeHtml(block.likes || "0")}件のいいね
                     </p>
 
-                    <p class="preview-instagram__caption"><strong>${UI.escapeHtml(block.username || "username")}</strong>${UI.escapeHtml(block.caption || "キャプション未入力")}</p>
+                    <p class="preview-instagram__caption"><strong>${UI.escapeHtml(block.username || "username")}</strong>${UI.formatText(block.caption || "キャプション未入力")}</p>
 
-                    <p class="preview-instagram__comments">${UI.escapeHtml(block.comments || "コメントなし")}
+                    <p class="preview-instagram__comments">${UI.formatText(block.comments || "コメントなし")}
                     </p>
                 </div>
             </div>

@@ -304,6 +304,7 @@ const App = {
             const storyBgInput = event.target.closest("[data-story-bg-input]");
             const liveMessageSelect = event.target.closest("select[data-live-message-input]");
             const twitterImageInput = event.target.closest("[data-twitter-image-input]");
+            const tiktokImageInput = event.target.closest("[data-tiktok-image-input]");
             const twitterPostSelect = event.target.matches("select[data-twitter-post-input]")
                 ? event.target
                 : null;
@@ -407,6 +408,13 @@ const App = {
                 const file = twitterImageInput.files[0];
 
                 EditorController.saveTwitterPostImage(blockId, postId, file);
+            }
+
+            if (tiktokImageInput) {
+                const blockId = tiktokImageInput.dataset.tiktokImageInput;
+                const file = tiktokImageInput.files[0];
+
+                EditorController.saveBlockImage(blockId, file);
             }
 
             if (characterAvatarInput) {

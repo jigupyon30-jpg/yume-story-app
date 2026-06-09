@@ -186,7 +186,7 @@ Object.assign(EditorController, {
                             return `
                                 <p class="preview-instagram-live__host">
                                     <strong>${UI.escapeHtml(username)}</strong>
-                                    <span>${UI.escapeHtml(message.text || "配信者の会話")}</span>
+                                    <span>${UI.formatText(message.text || "配信者の会話")}</span>
                                 </p>
                             `;
                         }
@@ -194,7 +194,7 @@ Object.assign(EditorController, {
                         return `
                             <p>
                                 <strong>${UI.escapeHtml(message.username || "user")}</strong>
-                                <span>${UI.escapeHtml(message.text || "コメント")}</span>
+                                <span>${UI.formatText(message.text || "コメント")}</span>
                             </p>
                         `;
                     })

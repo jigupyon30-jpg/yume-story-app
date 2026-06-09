@@ -34,7 +34,7 @@ const ReaderController = {
         if (block.type === "text") {
             return `
                 <section class="reader-block">
-                    <p class="reader-text">${UI.escapeHtml(block.content || "")}</p>
+                    <p class="reader-text reader-text--${block.fontSize || "medium"}">${EditorController.formatTextContent(block.content || "")}</p>
                 </section>
             `;
         }

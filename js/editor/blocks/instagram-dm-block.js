@@ -339,7 +339,7 @@ Object.assign(EditorController, {
                                 <span>ノート</span>
                             </div>
 
-                            <p class="preview-instagram-dm__note-text">${UI.escapeHtml(message.text || "ノートに流した曲への反応")}</p>
+                            <p class="preview-instagram-dm__note-text">${UI.formatText(message.text || "ノートに流した曲への反応")}</p>
                         </div>
 
                         ${

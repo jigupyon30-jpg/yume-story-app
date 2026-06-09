@@ -34,6 +34,8 @@ Object.assign(EditorController, {
 
                 if (block.type === "wiki") return this.createWikiPreviewHtml(block);
 
+                if (block.type === "tiktok") return this.createTikTokPreviewHtml(block);
+
                 return "";
             })
             .join("");

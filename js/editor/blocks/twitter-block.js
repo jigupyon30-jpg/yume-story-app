@@ -252,7 +252,7 @@ Object.assign(EditorController, {
                         <span>@${UI.escapeHtml(post.username || "username")}</span>
                     </div>
 
-                    <p class="preview-twitter-post__text">${UI.escapeHtml(post.text || "投稿内容が未入力です")}</p>
+                    <p class="preview-twitter-post__text">${UI.formatText(post.text || "投稿内容が未入力です")}</p>
 
                     ${
                         post.imageData

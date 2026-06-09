@@ -61,7 +61,7 @@ Object.assign(EditorController, {
                 </p>
 
                 <div class="preview-wiki__lead">
-                    <p>${UI.escapeHtml(block.summary || "")}</p>
+                    <p>${UI.formatText(block.summary || "")}</p>
                 </div>
 
                 <div class="preview-wiki__layout">
@@ -86,17 +86,17 @@ Object.assign(EditorController, {
                     <div class="preview-wiki__main">
                         <section class="preview-wiki__section">
                             <h3>略歴</h3>
-                            <p>${UI.escapeHtml(block.history || "")}</p>
+                            <p>${UI.formatText(block.history || "")}</p>
                         </section>
 
                         <section class="preview-wiki__section">
                             <h3>出演</h3>
 
                             <h4>テレビドラマ</h4>
-                            <p>${UI.escapeHtml(block.drama || "")}</p>
+                            <p>${UI.formatText(block.drama || "")}</p>
 
                             <h4>映画</h4>
-                            <p>${UI.escapeHtml(block.movie || "")}</p>
+                            <p>${UI.formatText(block.movie || "")}</p>
                         </section>
                     </div>
                 </div>

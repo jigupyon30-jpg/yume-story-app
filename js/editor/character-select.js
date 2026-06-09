@@ -76,6 +76,14 @@ Object.assign(EditorController, {
                         };
                     }
 
+                    if (blockType === "tiktok") {
+                        return {
+                            ...block,
+                            characterId: character.id,
+                            displayName: character.tiktokName || character.name
+                        };
+                    }
+
                     return block;
                 })
             };

@@ -33,5 +33,10 @@ const UI = {
             .replaceAll(">", "&gt;")
             .replaceAll('"', "&quot;")
             .replaceAll("'", "&#039;");
+    },
+
+    // 改行を<br>に変換して表示用テキストを作る
+    formatText(text) {
+        return this.escapeHtml(text || "").replace(/\n/g, "<br>");
     }
 };

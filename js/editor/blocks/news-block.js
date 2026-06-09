@@ -73,10 +73,10 @@ Object.assign(EditorController, {
                         ${UI.escapeHtml(block.headline || "ニュース見出し未入力")}
                     </h3>
 
-                    <p class="preview-news__text">${UI.escapeHtml(block.body || "記事本文が未入力です")}
+                    <p class="preview-news__text">${UI.formatText(block.body || "記事本文が未入力です")}
                     </p>
 
-                    <p class="preview-news__reaction">${UI.escapeHtml(block.reaction || "SNSの反響なし")}
+                    <p class="preview-news__reaction">${UI.formatText(block.reaction || "SNSの反響なし")}
                     </p>
                 </div>
             </article>

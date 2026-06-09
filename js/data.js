@@ -41,6 +41,7 @@ const DataFactory = {
             id: this.createId("block"),
             type: "text",
             content: "",
+            fontSize: "medium",
             createdAt: new Date().toISOString()
         };
     },
@@ -190,6 +191,24 @@ const DataFactory = {
         };
     },
 
+    // TikTokブロック
+    createTikTokBlock() {
+        return {
+            id: this.createId("block"),
+            type: "tiktok",
+            characterId: "",
+            displayName: "",
+            caption: "",
+            musicName: "",
+            likes: "",
+            comments: "",
+            saves: "",
+            shares: "",
+            imageData: null,
+            createdAt: new Date().toISOString()
+        };
+    },
+
     // ブロックタイプごとに作成する
     createBlockByType(type) {
         if (type === "text") {
@@ -224,6 +243,9 @@ const DataFactory = {
         }
         if (type === "twitter") {
             return this.createTwitterBlock();
+        }
+        if (type === "tiktok") {
+            return this.createTikTokBlock();
         }
 
         return null;
