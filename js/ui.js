@@ -2,27 +2,30 @@
 const UI = {
     // 画面IDをまとめておく
     pages: {
-        list: "projectListPage",
-        create: "projectCreatePage",
-        info: "projectInfoPage",
-        detail: "projectDetailPage",
-        character: "characterPage",
-        reader: "readerPage"
+        home: "homePage",
+        project: "projectPage",
+        editor: "editorPage",
+        preview: "previewPage",
+    },
+
+    pageTitles: {
+        homePage: "ホーム",
+        projectPage: "作品",
+        editorPage: "エディタ",
+        previewPage: "プレビュー",
     },
 
     // 指定した画面だけ表示する
     showPage(pageId) {
-        const pages = document.querySelectorAll(".page");
-
-        pages.forEach((page) => {
-            page.classList.remove("is-active");
+        document.querySelectorAll(".page").forEach((page) => {
+            page.classList.toggle("is-active", page.id === pageId);
         });
 
-        const targetPage = document.getElementById(pageId);
+        document.querySelectorAll(".nav-button").forEach((button) => {
+            button.classList.toggle("is-active", button.dataset.page === pageId);
+        });
 
-        if (targetPage) {
-            targetPage.classList.add("is-active");
-        }
+        document.getElementById("pageTitle").textContent = this.pageTitles[pageId] || "";
     },
 
     // 改行などを安全に表示するための変換
@@ -35,8 +38,13 @@ const UI = {
             .replaceAll("'", "&#039;");
     },
 
-    // 改行を<br>に変換して表示用テキストを作る
-    formatText(text) {
-        return this.escapeHtml(text || "").replace(/\n/g, "<br>");
-    }
+    formatDate(dateString) {
+        const date = new Date(dateString);
+
+        return date.toLocaleDateString("ja-JP", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+        });
+    },
 };

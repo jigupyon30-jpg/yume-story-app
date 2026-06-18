@@ -9,364 +9,190 @@
     <link rel="stylesheet" href="./css/layout.css">
     <link rel="stylesheet" href="./css/components.css">
     <link rel="stylesheet" href="./css/page.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Alata&family=Aoboshi+One&family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Cinzel:wght@400..900&family=Cormorant+Infant:ital,wght@0,300..700;1,300..700&family=Dosis:wght@200..800&family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Fira+Code:wght@300..700&family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=LINE+Seed+JP&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=M+PLUS+Rounded+1c&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+JP:wght@100..900&family=Noto+Serif+JP:wght@200..900&family=Outfit:wght@100..900&family=Oxygen:wght@300;400;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Quicksand:wght@300..700&family=Roboto:ital,wght@0,100..900;1,100..900&family=Sacramento&family=Shippori+Mincho&family=Shippori+Mincho+B1&family=Work+Sans:ital,wght@0,100..900;1,100..900&family=Zen+Kaku+Gothic+Antique&family=Zen+Kaku+Gothic+New&family=Zen+Maru+Gothic&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
 </head>
-
 <body>
-    <div class="app">
-        <header class="app-header">
-            <div>
-                <p class="app-header__label">Yume Story Studio</p>
-                <h1 class="app-header__title">夢小説制作アプリ</h1>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="sidebar__logo">
+                <span class="sidebar__logo-icon">
+                    <i class="fa-solid fa-feather"></i>
+                </span>
+                <div>
+                    <p class="sidebar__eyebrow">Yume Story</p>
+                    <h1>夢小説メーカー</h1>
+                </div>
             </div>
-        </header>
 
-        <main class="app-main">
-            <!-- 作品一覧画面 -->
-            <section class="page is-active" id="projectListPage">
-                <div class="page-head">
-                    <div>
-                        <p class="page-head__label">Novel List</p>
-                        <h2 class="page-head__title">作品一覧</h2>
-                    </div>
+            <nav class="sidebar__nav">
+                <button class="nav-button is-active" data-page="homePage">
+                    <i class="fa-solid fa-house"></i>
+                    ホーム
+                </button>
+                <button class="nav-button" data-page="projectPage">
+                    <i class="fa-solid fa-book-open"></i>
+                    作品
+                </button>
+                <button class="nav-button" data-page="editorPage">
+                    <i class="fa-solid fa-pen-nib"></i>
+                    エディタ
+                </button>
+                <button class="nav-button" data-page="previewPage">
+                    <i class="fa-solid fa-eye"></i>
+                    プレビュー
+                </button>
+            </nav>
+        </aside>
 
-                    <button class="button button--primary" id="openCreateProjectButton">
-                        <i class="fa-solid fa-plus"></i>
-                        <span>新規作品</span>
-                    </button>
+        <main class="main">
+            <header class="topbar">
+                <div>
+                    <p class="page-kicker">Creative writing studio</p>
+                    <h2 id="pageTitle">ホーム</h2>
                 </div>
 
-                <div class="project-list" id="projectList"></div>
+                <button class="primary-button" id="openCreateProjectButton">
+                    <i class="fa-solid fa-plus"></i>
+                    新規作品
+                </button>
+            </header>
+
+            <section class="page is-active" id="homePage">
+                <div class="home-grid">
+                    <article class="summary-card">
+                        <p>登録作品</p>
+                        <strong id="projectCount">0</strong>
+                    </article>
+
+                    <article class="summary-card">
+                        <p>選択中の作品</p>
+                        <strong id="currentProjectName">未選択</strong>
+                    </article>
+                </div>
+
+                <section class="panel">
+                    <div class="panel__header">
+                        <h3>最近の作品</h3>
+                    </div>
+                    <div class="project-list" id="recentProjectList"></div>
+                </section>
             </section>
 
-            <!-- 作品作成画面 -->
-            <section class="page" id="projectCreatePage">
-                <div class="page-head">
-                    <div>
-                        <p class="page-head__label">Create</p>
-                        <h2 class="page-head__title">作品を作成</h2>
+            <section class="page" id="projectPage">
+                <section class="panel">
+                    <div class="panel__header">
+                        <h3>作品一覧</h3>
                     </div>
 
-                    <button class="button button--ghost" data-back-to-list>
-                        戻る
-                    </button>
-                </div>
-
-                <form class="form-card" id="projectForm">
-                    <label class="form-field">
-                        <span>作品タイトル</span>
-                        <input type="text" id="projectTitle" placeholder="例: ミルクブラウンのお姫様" required>
-                    </label>
-
-                    <label class="form-field">
-                        <span>ジャンル</span>
-                        <select id="projectGenre">
-                            <option value="紅一点">紅一点</option>
-                            <option value="学パロ">学パロ</option>
-                            <option value="社会人パロ">社会人パロ</option>
-                            <option value="芸能界">芸能界</option>
-                            <option value="その他">その他</option>
-                        </select>
-                    </label>
-
-                    <label class="form-field">
-                        <span>あらすじ</span>
-                        <textarea id="projectMemo" placeholder="どんな話にするかメモ"></textarea>
-                    </label>
-
-                    <button class="button button--primary" type="submit">保存する</button>
-                </form>
-            </section>
-
-            <!-- 作品詳細ページ-->
-            <section class="page" id="projectInfoPage">
-                <div class="page-head">
-                    <div>
-                        <p class="page-head__label" id="infoGenre">Genre</p>
-                        <h2 class="page-head__title" id="infoTitle">作品タイトル</h2>
-                        <p class="page-head__memo" id="infoMemo"></p>
-                    </div>
-
-                    <button class="button button--ghost" data-back-to-list>
-                        作品一覧へ
-                    </button>
-                </div>
-
-                <div class="project-info-card">
-                    <div class="project-info-card__main">
-                        <p class="project-info-card__label">Story Detail</p>
-                        <h3 id="infoCardTitle">作品タイトル</h3>
-                        <p id="infoCardMemo">あらすじメモ</p>
-                    </div>
-
-                    <div class="project-info-stats">
-                        <div class="project-info-stat">
-                            <span id="infoBlockCount">0</span>
-                            <p>ブロック</p>
-                        </div>
-
-                        <div class="project-info-stat">
-                            <span id="infoCharacterCount">0</span>
-                            <p>キャラ</p>
-                        </div>
-
-                        <div class="project-info-stat">
-                            <span id="infoRelationshipCount">0</span>
-                            <p>関係性</p>
-                        </div>
-                    </div>
-
-                    <div class="project-info-actions">
-                        <button class="button button--primary" id="openEditorButton">
-                            <i class="fa-solid fa-pen-to-square"></i>
-                            <span>本文を書く</span>
-                        </button>
-
-                        <button class="button button--ghost" id="openCharacterButton">
-                            <i class="fa-solid fa-user"></i>
-                            <span>キャラ管理</span>
-                        </button>
-                    </div>
-
-                    <div class="episode-section">
-                        <div class="episode-section__head">
-                            <h3>お話一覧</h3>
-
-                            <button class="button button--primary" id="createEpisodeButton">
-                                <i class="fa-solid fa-plus"></i>
-                                <span>新しい話</span>
-                            </button>
-                        </div>
-
-                        <div id="episodeList"></div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- キャラクター管理画面 -->
-            <section class="page" id="characterPage">
-                <div class="page-head">
-                    <div>
-                        <p class="page-head__label">Character</p>
-                        <h2 class="page-head__title">キャラクター</h2>
-                        <p class="page-head__memo">SNSブロックで使う名前・ユーザー名を登録できます。</p>
-                    </div>
-
-                    <button class="button button--ghost" id="backToProjectInfoButton">
-                        作品詳細へ
-                    </button>
-                </div>
-
-                <form class="form-card" id="characterForm">
-                    <input type="hidden" id="characterId">
-                    <label class="form-field">
-                        <span>名前</span>
-                        <input type="text" id="characterName" placeholder="例：草川まりあ" required>
-                    </label>
-
-                    <label class="form-field">
-                        <span>役割</span>
-                        <select id="characterRole">
-                            <option value="主人公">主人公</option>
-                            <option value="相手役">相手役</option>
-                            <option value="メンバー">メンバー</option>
-                            <option value="友達">友達</option>
-                            <option value="公式アカウント">公式アカウント</option>
-                            <option value="オタク">オタク</option>
-                            <option value="その他">その他</option>
-                        </select>
-                    </label>
-
-                    <label class="form-field">
-                        <span>アイコン画像</span>
-                        <input type="file" id="characterAvatar" accept="image/*">
-                    </label>
-
-                    <div class="character-avatar-preview" id="characterAvatarPreview"></div>
-
-                    <div class="sns-form-grid">
-                        <label class="form-field">
-                            <span>Instagram表示名</span>
-                            <input type="text" id="characterInstagramName" placeholder="例：草川まりあ">
-                        </label>
-
-                        <label class="form-field">
-                            <span>Instagramユーザー名</span>
-                            <input type="text" id="characterInstagramUsername" placeholder="例：kusakawa_milk">
-                        </label>
-
-                        <label class="form-field">
-                            <span>Twitter / X表示名</span>
-                            <input type="text" id="characterTwitterName" placeholder="例：M!LK">
-                        </label>
-
-                        <label class="form-field">
-                            <span>Twitter / Xユーザー名</span>
-                            <input type="text" id="characterTwitterUsername" placeholder="例：milk_official">
-                        </label>
-
-                        <label class="form-field">
-                            <span>TikTokユーザー名</span>
-                            <input type="text" id="characterTikTokUsername" placeholder="例：milk_official">
-                        </label>
-
-                        <label class="form-field">
-                            <span>LINE表示名</span>
-                            <input type="text" id="characterLineName" placeholder="例：柔太朗">
-                        </label>
-                    </div>
-
-                    <button class="button button--primary" type="submit">
-                        <i class="fa-solid fa-floppy-disk"></i>
-                        <span>保存する</span>
-                    </button>
-                </form>
-
-                <div class="character-list" id="characterList"></div>
-            </section>
-
-            <!-- お話単体 -->
-            <section class="page" id="readerPage">
-                <div class="page-head">
-                    <div>
-                        <p class="page-head__label" id="readerProjectTitle">作品タイトル</p>
-                        <h2 class="page-head__title" id="readerEpisodeTitle">第1話</h2>
-                        <p class="page-head__memo">保存したお話を読むページです。</p>
-                    </div>
-
-                    <button class="button button--ghost" id="backToEpisodeListButton">
-                        作品詳細へ
-                    </button>
-                </div>
-
-                <article class="reader-content" id="readerContent"></article>
-            </section>
-
-            <!-- 作品詳細・本文エディタ画面 -->
-            <section class="page" id="projectDetailPage">
-                <div class="page-head">
-                    <div>
-                        <p class="page-head__label" id="detailGenre">Genre</p>
-                        <h2 class="page-head__title" id="detailTitle">作品タイトル</h2>
-                        <p class="page-head__memo" id="detailMemo"></p>
-                    </div>
-
-                    <button class="button button--ghost" data-back-to-list>
-                        作品一覧へ
-                    </button>
-                </div>
-
-                <div class="editor">
-                    <div class="editor__head">
-                        <h3>本文エディタ</h3>
+                    <form class="project-form" id="projectForm">
+                        <input type="hidden" id="projectId">
                         
-                        <div class="block-menu">
-                            <button class="button button--primary" id="openBlockMenuButton">
-                                <i class="fa-solid fa-plus"></i>
-                                <span>ブロック追加</span>
+                        <label class="form-field">
+                            <span>作品タイトル</span>
+                            <input type="text" id="projectTitleInput" placeholder="例：ミルクブラウンのお姫様">
+                        </label>
+
+                        <label class="form-field">
+                            <span>ジャンル</span>
+                            <select id="projectGenreInput">
+                                <option value="紅一点">紅一点</option>
+                                <option value="学パロ">学パロ</option>
+                                <option value="社会人パロ">社会人パロ</option>
+                                <option value="芸能界">芸能界</option>
+                                <option value="その他">その他</option>
+                            </select>
+                        </label>
+
+                        <label class="form-field">
+                            <span>メモ</span>
+                            <textarea id="projectMemoInput" placeholder="世界観、関係性、書きたい雰囲気など"></textarea>
+                        </label>
+
+                        <div class="form-actions">
+                            <button type="submit" class="primary-button">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                保存
                             </button>
-
-                            <div class="block-menu__panel" id="blockMenuPanel">
-                                <button class="block-menu__item" data-add-block-type="text">
-                                    <i class="fa-solid fa-file-lines"></i>
-                                    <span>本文</span>
-                                </button>
-
-                                <button class="block-menu__item" data-add-block-type="line">
-                                    <i class="fa-solid fa-comment"></i>
-                                    <span>LINE</span>
-                                </button>
-
-                                <button class="block-menu__item" data-add-block-type="instagram">
-                                    <i class="fa-brands fa-instagram"></i>
-                                    <span>インスタ投稿</span>
-                                </button>
-
-                                <button class="block-menu__item" data-add-block-type="instagramDm">
-                                    <i class="fa-solid fa-paper-plane"></i>
-                                    <span>インスタDM</span>
-                                </button>
-
-                                <button class="block-menu__item" data-add-block-type="instagramStory">
-                                    <i class="fa-solid fa-circle-play"></i>
-                                    <span>インスタストーリー</span>
-                                </button>
-
-                                <button class="block-menu__item" data-add-block-type="instagramLive">
-                                    <i class="fa-solid fa-video"></i>
-                                    <span>インスタライブ</span>
-                                </button>
-
-                                <button class="block-menu__item" data-add-block-type="tiktok">
-                                    <i class="fa-brands fa-tiktok"></i>
-                                    <span>TikTok</span>
-                                </button>
-
-                                <button class="block-menu__item" data-add-block-type="twitter">
-                                    <i class="fa-brands fa-x-twitter"></i>
-                                    <span>Twitter / X</span>
-                                </button>
-
-                                <button class="block-menu__item" data-add-block-type="news">
-                                    <i class="fa-solid fa-newspaper"></i>
-                                    <span>芸能ニュース</span>
-                                </button>
-
-                                <button class="block-menu__item" data-add-block-type="wiki">
-                                    <i class="fa-solid fa-id-card"></i>
-                                    <span>Wiki</span>
-                                </button>
-                            </div>
-
-                            <div class="block-menu">
-                                <button class="button button--primary" id="openTemplateMenuButton">
-                                    <i class="fa-solid fa-layer-group"></i>
-                                    <span>テンプレ</span>
-                                </button>
-
-                            <div class="block-menu__panel" id="templateMenuPanel">
-                                <button class="block-menu__item" data-add-template="onlyGirl">
-                                    <i class="fa-solid fa-crown"></i>
-                                    <span>紅一点セット</span>
-                                </button>
-
-                                <button class="block-menu__item" data-add-template="school">
-                                    <i class="fa-solid fa-school"></i>
-                                    <span>学パロセット</span>
-                                </button>
-
-                                <button class="block-menu__item" data-add-template="office">
-                                    <i class="fa-solid fa-briefcase"></i>
-                                    <span>社会人セット</span>
-                                </button>
-
-                                <button class="block-menu__item" data-add-template="onlyGirl">
-                                    <i class="fa-solid fa-star"></i>
-                                    <span>芸能界セット</span>
-                                </button>
-                            </div>
+                            <button type="button" class="ghost-button" id="resetProjectFormButton">
+                                リセット
+                            </button>
                         </div>
+                    </form>
+
+                    <div class="project-list" id="projectList"></div>
+                </section>
+            </section>
+
+            <section class="page" id="editorPage">
+                <section class="panel">
+                    <div class="panel__header">
+                        <div>
+                            <h3>本文エディタ</h3>
+                            <p id="editorProjectLabel">作品を選択してください</p>
                         </div>
                     </div>
+
+                    <form class="editor-form" id="textBlockForm">
+                        <input type="hidden" id="blockId">
+
+                        <label class="form-field">
+                            <span>本文ブロック</span>
+                            <textarea id="textBlockInput" placeholder="ここに本文を書く"></textarea>
+                        </label>
+
+                        <div class="form-actions">
+                            <button type="submit" class="primary-button">
+                                <i class="fa-solid fa-plus"></i>
+                                本文ブロックを追加
+                            </button>
+                            <button type="button" class="ghost-button" id="resetBlockFormButton">
+                                入力リセット
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- SNSブロック追加フォーム -->
+                    <section class="sns-block-panel">
+                        <div class="panel__header">
+                            <div>
+                                <h3>SNSブロック追加</h3>
+                                <p>LINE / Instagram / DM / Twitter を本文の間に挿入できます</p>
+                            </div>
+                        </div>
+
+                        <label class="form-field">
+                            <span>ブロック種類</span>
+                            <select id="snsBlockType">
+                                <option value="line">LINE</option>
+                                <option value="instagramPost">Instagram投稿</option>
+                                <option value="instagramDm">Instagram DM</option>
+                                <option value="twitter">Twitter</option>
+                            </select>
+                        </label>
+
+                        <div id="snsDynamicForm"></div>
+
+                        <div class="form-actions">
+                            <button type="button" class="primary-button" id="addSnsBlockButton">
+                                <i class="fa-solid fa-plus"></i>
+                                SNSブロックを追加
+                            </button>
+                        </div>
+                    </section>
 
                     <div class="block-list" id="blockList"></div>
-                </div>
-                
-                <div class="preview">
-                    <div class="preview__head">
-                        <h3>プレビュー</h3>
+                </section>
+            </section>
 
-                        <button class="button button--ghost" id="refreshPreviewButton">
-                            <i class="fa-solid fa-rotate-right"></i>
-                            <span>更新</span>
-                        </button>
+            <section class="page" id="previewPage">
+                <section class="preview-paper">
+                    <div class="preview-header">
+                        <p id="previewGenre">Genre</p>
+                        <h3 id="previewTitle">作品を選択してください</h3>
                     </div>
 
-                    <div class="preview-list" id="previewList"></div>
-                </div>
+                    <div class="preview-body" id="previewBody"></div>
+                </section>
             </section>
         </main>
     </div>
@@ -374,32 +200,8 @@
     <script src="./js/storage.js"></script>
     <script src="./js/data.js"></script>
     <script src="./js/ui.js"></script>
-
     <script src="./js/project.js"></script>
-    <script src="./js/episode.js"></script>
-    <script src="./js/character.js"></script>
-    <script src="./js/templates.js"></script>
-
-    <script src="./js/services/EpisodeUpdateService.js"></script>
-
-    <script src="./js/editor/editor.js"></script>
-    <script src="./js/editor/character-select.js"></script>
-    <script src="./js/editor/block-renderer.js"></script>
-    <script src="./js/editor/block-actions.js"></script>
-    <script src="./js/editor/preview-renderer.js"></script>
-
-    <script src="./js/editor/blocks/text-block.js"></script>
-    <script src="./js/editor/blocks/line-block.js"></script>
-    <script src="./js/editor/blocks/instagram-block.js"></script>
-    <script src="./js/editor/blocks/instagram-dm-block.js"></script>
-    <script src="./js/editor/blocks/instagram-story-block.js"></script>
-    <script src="./js/editor/blocks/instagram-live-block.js"></script>
-    <script src="./js/editor/blocks/twitter-block.js"></script>
-    <script src="./js/editor/blocks/tiktok-block.js"></script>
-    <script src="./js/editor/blocks/news-block.js"></script>
-    <script src="./js/editor/blocks/wiki-block.js"></script>
-
-    <script src="./js/reader.js"></script>
+    <script src="./js/editor.js"></script>
     <script src="./js/app.js"></script>
 </body>
 </html>

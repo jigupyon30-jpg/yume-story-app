@@ -1,262 +1,217 @@
 // 作品一覧・作品作成・作品詳細表示をまとめる
 const ProjectController = {
+    projects: [],
     currentProjectId: null,
-    currentEpisodeId: null,
 
-    // 作品一覧を描画
-    renderProjectList() {
-        const projectList = document.getElementById("projectList");
-        const projects = StorageService.getProjects();
+    elements: {},
 
-        if (projects.length === 0) {
-            projectList.innerHTML = `
-                <div class="empty">
-                    まだ作品がありません。<br>
-                    最初の夢小説を作ってみよう♡
-                </div>
-            `;
+    init() {
+        this.projects = Storage.get(Storage.keys.projects, []);
+        this.currentProjectId = Storage.get(Storage.keys.currentProjectId, null);
 
-            return;
-        }
-
-        projectList.innerHTML = projects
-            .map((project) => {
-                return `
-                    <article class="project-card">
-                        <p class="project-card__genre">${UI.escapeHtml(project.genre)}</p>
-                        <h3 class="project-card__title">${UI.escapeHtml(project.title)}</h3>
-                        <p class="project-card__memo">
-                            ${UI.escapeHtml(project.memo || "あらすじメモなし")}
-                        </p>
-
-                        <div class="project-card__actions">
-                            <button class="button button--primary" data-open-project-info="${project.id}">
-                                <i class="fa-solid fa-circle-info"></i>
-                                <span>詳細</span>
-                            </button>
-                            <button class="button button--ghost" data-delete-project="${project.id}">削除</button>
-                        </div>
-                    </article>
-                `;
-            })
-            .join("");
+        this.cacheElements();
+        this.bindEvents();
+        this.render();
     },
 
-    // 古い作品データをepisodes対応の形に変換する
-    normalizeProject(project) {
-        if (!project.episodes) {
-            project.episodes = [
-                {
-                    id: DataFactory.createId("episode"),
-                    title: "第１話",
-                    blocks: episode.blocks || [],
-                    createdAt: project.createdAt || new Date().toISOString(),
-                    updatedAt: project.updatedAt || new Date().toISOString()
-                }
-            ];
-
-            delete episode.blocks;
-        }
-
-        if (!project.characters) {
-            project.characters = [];
-        }
-
-        if (!project.relationships) {
-            project.relationships = [];
-        }
-
-        return project;
+    cacheElements() {
+        this.elements.form = document.getElementById("projectForm");
+        this.elements.id = document.getElementById("projectId");
+        this.elements.title = document.getElementById("projectTitleInput");
+        this.elements.genre = document.getElementById("projectGenreInput");
+        this.elements.memo = document.getElementById("projectMemoInput");
+        this.elements.projectList = document.getElementById("projectList");
+        this.elements.recentProjectList = document.getElementById("recentProjectList");
+        this.elements.projectCount = document.getElementById("projectCount");
+        this.elements.currentProjectName = document.getElementById("currentProjectName");
+        this.elements.resetButton = document.getElementById("resetProjectFormButton");
     },
-    // 新しい作品を保存する
-    createProject(event) {
-        event.preventDefault();
 
-        const titleInput = document.getElementById("projectTitle");
-        const genreInput = document.getElementById("projectGenre");
-        const memoInput = document.getElementById("projectMemo");
-
-        const project = DataFactory.createProject({
-            title: titleInput.value.trim(),
-            genre: genreInput.value,
-            memo: memoInput.value.trim()
+    bindEvents() {
+        this.elements.form.addEventListener("submit", (event) => {
+            event.preventDefault();
+            this.saveProject();
         });
 
-        const projects = StorageService.getProjects();
-
-        projects.unshift(project);
-        StorageService.saveProjects(projects);
-
-        event.target.reset();
-
-        this.renderProjectList();
-        UI.showPage(UI.pages.list);
+        this.elements.resetButton.addEventListener("click", () => {
+            this.resetForm();
+        });
     },
 
-    // Episode一覧を表示する
-    renderEpisodeList(project) {
-        const episodeList = document.getElementById("episodeList");
+    saveProject() {
+        const now = new Date().toISOString();
+        const id = this.elements.id.value || crypto.randomUUID();
 
-        if (!episodeList) {
+        const project = {
+            id,
+            title: this.elements.title.value.trim(),
+            genre: this.elements.genre.value,
+            memo: this.elements.memo.value.trim(),
+            blocks: this.getProjectById(id)?.blocks || [],
+            createdAt: this.getProjectById(id)?.createdAt || now,
+            updatedAt: now,
+        };
+
+        if (!project.title) {
+            alert("作品タイトルを入力してね");
             return;
         }
 
-        const episodes = project.episodes || [];
+        const existingIndex = this.projects.findIndex((item) => item.id === id);
 
-        if (episodes.length === 0) {
-            episodeList.innerHTML = `
-                <div class="empty">まだお話がありません</div>
-            `;
-            return;
+        if (existingIndex >= 0) {
+            this.projects[existingIndex] = project;
+        } else {
+            this.projects.unshift(project);
+            this.setCurrentProject(id);
         }
 
-        episodeList.innerHTML = episodes
-            .map((episode) => {
-                return `
-                    <article class="episode-card">
-                        <div class="episode-card__content">
-                            <label class="episode-title-field">
-                                <span>タイトル</span>
-                                <input type="text" value="${UI.escapeHtml(episode.title || "")}" data-episode-title-input="${episode.id}" placeholder="例：放課後、君からのDM">
-                            </label>
-                            <p>ブロック数：${episode.blocks?.length || 0}</p>
-                        </div>
-
-                        <div class="episode-card__actions">
-                            <button class="button button--ghost" data-read-episode="${episode.id}">
-                                <i class="fa-solid fa-book-open-reader"></i>
-                                <span>読む</span>
-                            </button>
-
-                            <button class="button button--primary" data-open-episode="${episode.id}">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                                <span>編集</span>
-                            </button>
-                        </div>
-                    </article>
-                `;
-            })
-            .join("");
+        this.save();
+        this.resetForm();
+        this.render();
+        EditorController.render();
     },
 
-    // 指定した話のエディタ画面を開く
-    openProject(projectId, episodeId) {
-        const projects = StorageService.getProjects();
-        const project = projects.find((item) => item.id === projectId);
+    editProject(id) {
+        const project = this.getProjectById(id);
 
         if (!project) {
-            alert("作品が見つかりませんでした");
             return;
         }
 
-        const normalizedProject = this.normalizeProject(project);
+        this.elements.id.value = project.id;
+        this.elements.title.value = project.title;
+        this.elements.genre.value = project.genre;
+        this.elements.memo.value = project.memo;
 
-        const episode = normalizedProject.episodes.find((item) => item.id === episodeId) || 
-        normalizedProject.episodes[0];
-
-        if (!episode) {
-            alert("お話が見つかりませんでした");
-            return;
-        }
-
-        this.currentProjectId = normalizedProject.id;
-        this.currentEpisodeId = episode.id;
-
-        console.log("currentEpisodeId", this.currentEpisodeId);
-
-        StorageService.saveProjects(projects);
-
-        document.getElementById("detailGenre").textContent = normalizedProject.genre;
-        document.getElementById("detailTitle").textContent = episode.title;
-        document.getElementById("detailMemo").textContent = normalizedProject.title;
-
-        EditorController.renderBlocks(episode);
-        EditorController.renderPreview(episode);
-
-        UI.showPage(UI.pages.detail);
+        UI.showPage(UI.pages.project);
     },
 
-    openProjectInfo(projectId) {
-        const projects = StorageService.getProjects();
-        const project = projects.find((item) => item.id === projectId);
-        const normalizedProject = this.normalizeProject(project);
+    deleteProject(id) {
+        const isConfirmed = confirm("この作品を削除する？");
 
-        StorageService.saveProjects(projects);
-
-        if (!project) {
-            alert("作品が見つかりませんでした");
+        if (!isConfirmed) {
             return;
         }
 
-        this.currentProjectId = project.id;
+        this.projects = this.projects.filter((project) => project.id !== id);
 
-        document.getElementById("infoGenre").textContent = project.genre;
-        document.getElementById("infoTitle").textContent = project.title;
-        document.getElementById("infoMemo").textContent = project.memo || "";
-
-        document.getElementById("infoCardTitle").textContent = project.title;
-        document.getElementById("infoCardMemo").textContent = project.memo || "あらすじメモはまだありません。";
-
-        const totalBlockCount = normalizedProject.episodes.reduce((total, episode) => {
-            return total + (episode.blocks?.length || 0);
-        }, 0);
-        document.getElementById("infoBlockCount").textContent = totalBlockCount;
-        document.getElementById("infoCharacterCount").textContent = project.characters?.length || 0;
-        document.getElementById("infoRelationshipCount").textContent = project.relationships?.length || 0;
-
-        UI.showPage(UI.pages.info);
-
-        this.renderEpisodeList(normalizedProject);
-    },
-
-
-    // 作品を削除する
-    deleteProject(projectId) {
-        const isOk = confirm("この作品を削除しますか？");
-
-        if (!isOk) {
-            return;
+        if (this.currentProjectId === id) {
+            this.currentProjectId = this.projects[0]?.id || null;
+            Storage.set(Storage.keys.currentProjectId, this.currentProjectId);
         }
 
-        const  projects = StorageService.getProjects();
-        const nextProjects = projects.filter((project) => project.id !== projectId);
-
-        StorageService.saveProjects(nextProjects);
-        this.renderProjectList();
+        this.save();
+        this.render();
+        EditorController.render();
     },
 
-    // 現在開いている作品を取得する
+    setCurrentProject(id) {
+        this.currentProjectId = id;
+        Storage.set(Storage.keys.currentProjectId, id);
+
+        this.render();
+        EditorController.render();
+        UI.showPage(UI.pages.editor);
+    },
+
     getCurrentProject() {
-        const projects = StorageService.getProjects();
-        return projects.find((project) => project.id === this.currentProjectId);
+        return this.getProjectById(this.currentProjectId);
     },
 
-    getCurrentEpisode() {
-        const project = this.getCurrentProject();
+    getProjectById(id) {
+        return this.projects.find((project) => project.id === id);
+    },
 
-        if (!project || !project.episodes) {
-            return null;
-        }
-
-        return project.episodes.find((episode) => {
-            return episode.id === this.currentEpisodeId;
-    });
-},
-
-    updateCurrentProject(updatedProject) {
-        const projects = StorageService.getProjects();
-        
-        const nextProjects = projects.map((project) => {
-            if (project.id === updatedProject.id) {
-                return {
-                    ...updatedProject,
-                    updatedAt: new Date().toISOString()
-                };
-            }
-
-            return project;
+    updateProject(updateProject) {
+        this.projects = this.projects.map((project) => {
+            return project.id === updateProject.id ? updateProject : project;
         });
 
-        StorageService.saveProjects(nextProjects);
-    }
+        this.save();
+        this.render();
+    },
+
+    resetForm() {
+        this.elements.form.reset();
+        this.elements.id.value = "";
+    },
+
+    save() {
+        Storage.set(Storage.keys.projects, this.projects);
+    },
+
+    render() {
+        this.recentProjectList();
+        this.renderHome();
+    },
+
+    recentProjectList() {
+        if (this.projects.length === 0) {
+            this.elements,projectList.innerHTML = `
+                <div class="empty-message">まだ作品がありません。新規作品を作ってね。</div>
+            `;
+            return;
+        }
+
+        this.elements.projectList.innerHTML = this.projects.map((project) => {
+            const isCurrent = project.id === this.currentProjectId;
+
+            return `
+                <article class="project-card">
+                    <div class="project-card__top">
+                        <div>
+                            <span class="genre-badge">${UI.escapeHtml(project.genre)}</span>
+                            <h4>${UI.escapeHtml(project.title)}</h4>
+                        </div>
+                        ${isCurrent ? `<span class="block-badge">選択中</span>` : ""}
+                    </div>
+
+                    <p>${UI.escapeHtml(project.memo || "メモなし")}</p>
+                    <p>更新日：${UI.formatDate(project.updatedAt)}</p>
+
+                    <div class="card-actions">
+                        <button class="primary-button" onclick="ProjectController.setCurrentProject('${project.id}')">
+                            開く
+                        </button>
+                        <button class="ghost-button" onclick="ProjectController.editProject('${project.id}')">
+                            編集
+                        </button>
+                        <button class="danger-button" onclick="ProjectController.deleteProject('${project.id}')">
+                            削除
+                        </button>
+                    </div>
+                </article>
+            `;
+        }).join("");
+    },
+
+    renderHome() {
+        const currentProject = this.getCurrentProject();
+
+        this.elements.projectCount.textContent = this.projects.length;
+        this.elements.currentProjectName.textContent = currentProject?.title || "未選択";
+
+        const recentProjects = this.projects.slice(0, 3);
+
+        if (recentProjects.length === 0) {
+            this.elements.recentProjectList.innerHTML = `
+                <div class="empty-message">最近の作品はまだありません。</div>
+            `;
+            return;
+        }
+
+        this.elements.recentProjectList.innerHTML = recentProjects.map((project) => {
+            return `
+                <article class="project-card">
+                    <span class="genre-badge">${UI.escapeHtml(project.genre)}</span>
+                    <h4>${UI.escapeHtml(project.title)}</h4>
+                    <p>${UI.escapeHtml(project.memo || "メモなし")}</p>
+                    <button class="primary-button" onclick="ProjectController.setCurrentProject('${project.id}')">
+                        この作品を書く
+                    </button>
+                </article>
+            `;
+        }).join("");
+    },
 };

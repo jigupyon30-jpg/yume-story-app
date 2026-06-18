@@ -1,16 +1,22 @@
 @charset "utf-8";
 :root {
-    --color-bg: #fff7fa;
-    --color-surface: #ffffff;
-    --color-surface-soft: #fff0f5;
-    --color-primary: #f29ab5;
-    --color-primary-dark: #df789a;
-    --color-text: #3d3036;
-    --color-text-muted: #8f7b84;
-    --color-border: #f3d8e2;
-    --color-shadow: rgba(190, 120, 150, 0.16);
+    --color-bg: #f8f6f3;
+    --color-surface: #fffdf9;
+    --color-surface-soft: #f1ece7;
+    --color-primary: #d9a7a7;
+    --color-primary-dark: #b97f7f;
+    --color-text: #3d3834;
+    --color-muted: #8c8177;
+    --color-border: #e5ddd5;
+    --color-danger: #d87878;
 
-    --font-base: "Hiragino Sans", "Noto Sans JP", sans-serif;
+    --font-base: "Hiragino Sans", "Yu Gothic", sans-serif;
+
+    --text-xs: 11px;
+    --text-sm: 12px;
+    --text-md: 14px;
+    --text-lg: 18px;
+    --text-xl: 22px;
 
     --radius-sm: 10px;
     --radius-md: 16px;
@@ -20,8 +26,9 @@
     --space-sm: 10px;
     --space-md: 16px;
     --space-lg: 24px;
+    --space-xl: 32px;
 
-    --header-height: 78px;
+    --shadow-soft: 0 12px 30px rgba(79, 60, 48, 0.08);
 }
 
 * {
@@ -33,7 +40,9 @@ body {
     font-family: var(--font-base);
     color: var(--color-text);
     background: var(--color-bg);
+    font-size: var(--text-md);
 }
+
 button,
 input,
 textarea,
@@ -43,6 +52,25 @@ select {
 button {
     cursor: pointer;
 }
+input,
+textarea,
+select {
+    width: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: #fff;
+    color: var(--color-text);
+    padding: 11px 13px;
+    font-size: var(--text-sm);
+}
 textarea {
     resize: vertical;
+    min-height: 120px;
+    line-height: 1.8;
+}
+h1,
+h2,
+h3,
+p {
+    margin: 0;
 }
