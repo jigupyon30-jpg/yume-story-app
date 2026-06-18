@@ -111,13 +111,13 @@ const EpisodeController = {
         }) || project.episodes[0] || null;
     },
 
-    updateEpisode(updateEpisode) {
+    updateEpisode(updatedEpisode) {
         const project = ProjectController.getCurrentProject();
 
         if (!project) return;
 
         project.episodes = project.episodes.map((episode) => {
-            return episode.id === updateEpisode.id ? updateEpisode : episode;
+            return episode.id === updatedEpisode.id ? updatedEpisode : episode;
         });
 
         project.updatedAt = new Date().toISOString();
