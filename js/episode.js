@@ -43,7 +43,7 @@ const EpisodeController = {
             updatedAt: now,
         };
 
-        project.episode.push(episode);
+        project.episodes.push(episode);
         project.updatedAt = now;
 
         this.setCurrentEpisode(episode.id);
