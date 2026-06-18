@@ -78,7 +78,7 @@ const EpisodeController = {
 
         if (!confirm("この話を削除する？")) return;
 
-        project.episodes = project.episode.filter((episode) => {
+        project.episodes = project.episodes.filter((episode) => {
             return episode.id !== id;
         });
 
