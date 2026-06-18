@@ -167,6 +167,7 @@
                                 <option value="instagramPost">Instagram投稿</option>
                                 <option value="instagramDm">Instagram DM</option>
                                 <option value="twitter">Twitter</option>
+                                <option value="news">芸能ニュース</option>
                             </select>
                         </label>
 
@@ -181,6 +182,30 @@
                     </section>
 
                     <div class="block-list" id="blockList"></div>
+                </section>
+            </section>
+
+            <section class="page" id="projectDetailPage">
+                <section class="panel">
+                    <div class="panel__header">
+                        <div>
+                            <h3 id="detailProjectTitle">作品詳細</h3>
+                            <p id="detailProjectMeta">ジャンル</p>
+                        </div>
+                    </div>
+
+                        <form class="episode-form" id="episodeForm">
+                            <label class="form-field">
+                                <span>話タイトル</span>
+                                <input type="text" id="episodeTitleInput" placeholder="例：第1話 出会い">
+                            </label>
+
+                            <button type="submit" class="primary-button">
+                                <i class="fa-solid fa-plus"></i>
+                                話を追加
+                            </button>
+                        </form>
+                        <div class="episode-list" id="episodeList"></div>
                 </section>
             </section>
 
@@ -201,6 +226,7 @@
     <script src="./js/data.js"></script>
     <script src="./js/ui.js"></script>
     <script src="./js/project.js"></script>
+    <script src="./js/episode.js"></script>
     <script src="./js/editor.js"></script>
     <script src="./js/app.js"></script>
 </body>

@@ -5,6 +5,7 @@ const Storage = {
     keys: {
         projects: "yumeStory.projects.v1",
         currentProjectId: "yumeStory.currentProjectId.v1",
+        currentEpisodeId: "yumeStory.currentEpisodeId.v1",
     },
 
     // 作品データを全部取得

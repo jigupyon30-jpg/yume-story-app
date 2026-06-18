@@ -46,8 +46,10 @@ const EditorController = {
 
     saveTextBlock() {
         const project = ProjectController.getCurrentProject();
+        const episode = EpisodeController.getCurrentEpisode();
 
-        if (!project) {
+
+        if (!project || !episode) {
             alert("先に作品を選択してね");
             return;
         }
@@ -61,7 +63,7 @@ const EditorController = {
 
         const now = new Date().toISOString();
 
-        project.blocks.push({
+        episode.blocks.push({
             id: crypto.randomUUID(),
             type: "text",
             content: { text },
@@ -69,9 +71,9 @@ const EditorController = {
             updatedAt: now,
         });
 
-        project.updatedAt = now;
+        episode.updatedAt = now;
 
-        ProjectController.updateProject(project);
+        EpisodeController.updateEpisode(episode);
         this.resetForm();
         this.render();
     },
@@ -79,8 +81,9 @@ const EditorController = {
     async saveSnsBlock() {
 
         const project = ProjectController.getCurrentProject();
+        const episode = EpisodeController.getCurrentEpisode();
 
-        if (!project) {
+        if (!project || !episode) {
             alert("先に作品を選択してね");
             return;
         }
@@ -99,7 +102,7 @@ const EditorController = {
         const now = new Date().toISOString();
         const content = await this.getSnsFormContent(type);
 
-        project.blocks.push({
+        episode.blocks.push({
             id: crypto.randomUUID(),
             type,
             content,
@@ -165,6 +168,17 @@ const EditorController = {
             };
         }
 
+        if (type === "news") {
+            return {
+                category: this.getValue("newsCategory"),
+                media: this.getValue("newsMedia"),
+                title: this.getValue("newsTitle"),
+                image: await this.readImageFile("newsImage"),
+                body: this.getValue("newsBody"),
+                date: this.getValue("newsDate"),
+            };
+        }
+
         return {};
     },
 
@@ -189,6 +203,10 @@ const EditorController = {
 
         if (type === "twitter") {
             this.elements.snsDynamicForm.innerHTML = this.getTwitterForm();
+        }
+
+        if (type === "news") {
+            this.elements.snsDynamicForm.innerHTML = this.getNewsForm();
         }
     },
 
@@ -370,16 +388,57 @@ const EditorController = {
         `;
     },
 
+    getNewsForm() {
+        return `
+            <label class="form-field">
+                <span>ニュース種別</span>
+                <select id="newsCategory">
+                    <option value="熱愛">熱愛</option>
+                    <option value="仕事発表">仕事発表</option>
+                    <option value="SNS反響">SNS反響</option>
+                    <option value="共演発表">共演発表</option>
+                    <option value="インタビュー">インタビュー</option>
+                </select>
+            </label>
+
+            <label class="form-field">
+                <span>媒体名</span>
+                <input type="text" id="newsMedia" placeholder="例：Yume News">
+            </label>
+
+            <label class="form-field">
+                <span>見出し</span>
+                <input type="text" id="newsTitle" placeholder="例：[[まりあ]]、[[M!LK]]新曲MVで圧倒的存在感">
+            </label>
+
+            <label class="form-field">
+                <span>サムネ</span>
+                <input type="file" id="newsImage" accept="image/*">
+            </label>
+
+            <label class="form-field">
+                <span>本文</span>
+                <textarea id="newsBody" placeholder="例：リンク風にしたい名前は [[まりあ]] のように書く"></textarea>
+            </label>
+
+            <label class="form-field">
+                <span>投稿日</span>
+                <input type="text" id="newsDate" placeholder="例：2026.06.18 12:05">
+            </label>
+        `;
+    },
+
     deleteBlock(id) {
         const project = ProjectController.getCurrentProject();
+        const episode = EpisodeController.getCurrentEpisode();
 
-        if (!project) return;
+        if (!project || !episode) return;
 
         const isConfirmed = confirm("このブロックを削除する？");
 
         if (!isConfirmed) return;
 
-        project.blocks = project.blocks.filter((block) => block.id !== id);
+        episode.blocks = episode.blocks.filter((block) => block.id !== id);
         project.updatedAt = new Date().toISOString();
 
         ProjectController.updateProject(project);
@@ -388,22 +447,23 @@ const EditorController = {
 
     moveBlock(id, direction) {
         const project = ProjectController.getCurrentProject();
+        const episode = EpisodeController.getCurrentEpisode();
 
-        if (!project) {
+        if (!project || !episode) {
             return;
         }
 
-        const currentIndex = project.blocks.findIndex((block) => block.id === id);
+        const currentIndex = episode.blocks.findIndex((block) => block.id === id);
         const nextIndex = currentIndex + direction;
 
-        if (nextIndex < 0 || nextIndex >= project.blocks.length) {
+        if (nextIndex < 0 || nextIndex >= episode.blocks.length) {
             return;
         }
 
-        const targetBlock = project.blocks[currentIndex];
+        const targetBlock = episode.blocks[currentIndex];
 
-        project.blocks.splice(currentIndex, 1);
-        project.blocks.splice(nextIndex, 0, targetBlock);
+        episode.blocks.splice(currentIndex, 1);
+        episode.blocks.splice(nextIndex, 0, targetBlock);
 
         project.updatedAt = new Date().toISOString();
 
@@ -411,8 +471,10 @@ const EditorController = {
         this.render();
     },
 
-    getBlockById(project, id) {
-        return project?.blocks.find((block) => block.id === id);
+    getBlockById(id) {
+        const episode = EpisodeController.getCurrentEpisode();
+
+        return episode?.blocks.find((block) => block.id);
     },
 
     resetForm() {
@@ -427,8 +489,9 @@ const EditorController = {
 
     renderEditor() {
         const project = ProjectController.getCurrentProject();
+        const episode = EpisodeController.getCurrentEpisode();
 
-        if (!project) {
+        if (!project || !episode) {
             this.elements.editorProjectLabel.textContent = "作品を選択してください";
             this.elements.blockList.innerHTML = `
                 <div class="empty-message">作品を選択すると本文を書けます。</div>
@@ -438,14 +501,14 @@ const EditorController = {
 
         this.elements.editorProjectLabel.textContent = `編集中：${project.title}`;
 
-        if (project.blocks.length === 0) {
+        if (episode.blocks.length === 0) {
             this.elements.blockList.innerHTML = `
                 <div class="empty-message">まだブロックがありません。</div>
             `;
             return;
         }
 
-        this.elements.blockList.innerHTML = project.blocks.map((block, index) => {
+        this.elements.blockList.innerHTML = episode.blocks.map((block, index) => {
             return `
                 <article class="block-card">
                     <div class="block-card__top">
@@ -539,7 +602,7 @@ const EditorController = {
                     <i class="fa-solid fa-floppy-disk"></i>
                     追加 / 保存
                 </button>
-                <button class="ghost-button" type="button" onclick="EditorController.cancelEditChatMessage('${block.id}', 'line')">
+                <button class="ghost-button" type="button" onclick="EditorController.cancelEditChatMessage('${block.id}', 'instagramDm')">
                     キャンセル
                 </button>
                 </div>
@@ -617,14 +680,14 @@ const EditorController = {
 
         return message.text || "本文なし";
     },
-    
+
     getBlockSummary(block) {
         if (block.type === "text") {
             return UI.escapeHtml(block.content.text).replaceAll("\n", "<br>");
         }
 
         if (block.type === "line") {
-            return `LINE：${UI.escapeHtml(block.content.text || block.content.messageType)}`;
+            return `LINE：${block.content.messages?.length || 0}件のメッセージ`;
         }
 
         if (block.type === "instagramPost") {
@@ -632,7 +695,7 @@ const EditorController = {
         }
 
         if (block.type === "instagramDm") {
-            return `InstagramDM：${UI.escapeHtml(block.content.text || block.content.messageType)}`;
+            return `InstagramDM：${block.content.messages?.length || 0}件のメッセージ`;
         }
 
         if (block.type === "twitter") {
@@ -645,15 +708,16 @@ const EditorController = {
     // LINE会話ブロックを新規作成
     async createLineBlock() {
         const project = ProjectController.getCurrentProject();
+        const episode = EpisodeController.getCurrentEpisode();
 
-        if (!project) {
+        if (!project || !episode) {
             alert("先に作品を選択してね");
             return;
         }
 
         const now = new Date().toISOString();
 
-        project.blocks.push({
+        episode.blocks.push({
             id: crypto.randomUUID(),
             type: "line",
             content: {
@@ -673,7 +737,7 @@ const EditorController = {
 
     addLineMessage(blockId) {
         const project = ProjectController.getCurrentProject();
-        const block = this.getBlockById(project, blockId);
+        const block = this.getBlockById(blockId);
 
         if (!block) return;
 
@@ -704,15 +768,16 @@ const EditorController = {
 
     async createDmBlock() {
         const project = ProjectController.getCurrentProject();
+        const episode = EpisodeController.getCurrentEpisode();
 
-        if (!project) {
+        if (!project || !episode) {
             alert("先に作品を選択してね");
             return;
         }
 
         const now = new Date().toISOString();
 
-        project.blocks.push({
+        episode.blocks.push({
             id: crypto.randomUUID(),
             type: "instagramDm",
             content: {
@@ -732,7 +797,7 @@ const EditorController = {
 
     async addDmMessage(blockId) {
         const project = ProjectController.getCurrentProject();
-        const block = this.getBlockById(project, blockId);
+        const block = this.getBlockById(blockId);
 
         if (!block) return;
 
@@ -764,7 +829,7 @@ const EditorController = {
 
     deleteChatMessage(blockId, messageId) {
         const project = ProjectController.getCurrentProject();
-        const block = this.getBlockById(project, blockId);
+        const block = this.getBlockById(blockId);
 
         if (!block) return;
 
@@ -780,7 +845,7 @@ const EditorController = {
 
     moveChatMessage(blockId, messageId, direction) {
         const project = ProjectController.getCurrentProject();
-        const block = this.getBlockById(project, blockId);
+        const block = this.getBlockById(blockId);
 
         if (!block || !block.content.messages) return;
 
@@ -806,7 +871,7 @@ const EditorController = {
 
     editChatMessage(blockId, messageId) {
         const project = ProjectController.getCurrentProject();
-        const block = this.getBlockById(project, blockId);
+        const block = this.getBlockById(blockId);
 
         if (!block || !block.content.messages) return;
 
@@ -830,7 +895,6 @@ const EditorController = {
             document.getElementById(`dmKind-${blockId}`).value = message.kind || "text";
             document.getElementById(`dmText-${blockId}`).value = message.text || "";
             document.getElementById(`dmCallTime-${blockId}`).value = message.callTime || "";
-            document.getElementById(`dmQuoteImage-${blockId}`).value = message.quoteImage || "";
         }
     },
 
@@ -855,8 +919,9 @@ const EditorController = {
 
     renderPreview() {
         const project = ProjectController.getCurrentProject();
+        const episode = EpisodeController.getCurrentEpisode();
 
-        if (!project) {
+        if (!project || !episode) {
             this.elements.previewTitle.textContent = "作品を選択してください";
             this.elements.previewGenre.textContent = "Genre";
             this.elements.previewBody.innerHTML = `
@@ -865,22 +930,24 @@ const EditorController = {
             return;
         }
 
-        this.elements.previewTitle.textContent = project.title;
+        this.elements.previewTitle.textContent = `${project.title} / ${episode.title}`;
         this.elements.previewGenre.textContent = project.genre;
 
-        if (project.blocks.length === 0) {
+        if (episode.blocks.length === 0) {
             this.elements.previewBody.innerHTML = `
                 <div class="empty-message">本文ブロックがまだありません。</div>
             `;
             return;
         }
 
-        this.elements.previewBody.innerHTML = project.blocks.map((block) => {
+        this.elements.previewBody.innerHTML = episode.blocks.map((block) => {
             if (block.type === "text") return this.renderTextPreview(block);
             if (block.type === "line") return this.renderLinePreview(block);
             if (block.type === "instagramPost") return this.renderInstagramPostPreview(block);
             if (block.type === "instagramDm") return this.renderInstagramDmPreview(block);     
-            if (block.type === "twitter") return this.renderTwitterPreview(block);       
+            if (block.type === "twitter") return this.renderTwitterPreview(block);
+            if (block.type === "news") return this.renderNewsPreview(block);
+
             return "";
         }).join("");
     },
@@ -912,7 +979,11 @@ const EditorController = {
 
                         return `
                             <div class="line-message ${isMe ? "is-me" : ""}">
-                                ${!isMe ? `<img class="line-icon" src="${UI.escapeHtml(content.partnerIcon)}" alt="">` : ""}
+                                ${!isMe ? (content.partnerIcon ? `<img class="line-icon" src="${UI.escapeHtml(content.partnerIcon)}" alt="">` : `
+                                    <div class="line-icon line-icon--dummy">
+                                        <i class="fa-solid fa-user"></i>
+                                    </div>
+                                `): ""}
                                 <div>
                                     <div class="line-call-bubble">
                                         <i class="${iconClass}"></i>
@@ -928,7 +999,11 @@ const EditorController = {
 
                     return `
                         <div class="line-message ${isMe ? "is-me" : ""}">
-                            ${!isMe ? `<img class="line-icon" src="${UI.escapeHtml(content.partnerIcon)}" alt="">` : ""}
+                            ${!isMe ? (content.partnerIcon ? `<img class="line-icon" src="${UI.escapeHtml(content.partnerIcon)}" alt="">` : `
+                                    <div class="line-icon line-icon--dummy">
+                                        <i class="fa-solid fa-user"></i>
+                                    </div>
+                                `): ""}
                             <div>
                                 <div class="line-bubble">${UI.escapeHtml(message.text)}</div>
                                 ${isMe ? `<span class="read-label">既読</span>` : ""}
@@ -946,14 +1021,23 @@ const EditorController = {
         return `
             <article class="sns-preview">
                 <div class="insta-header">
-                    <img class="sns-icon" src="${UI.escapeHtml(content.icon)}" alt="">
+                    ${content.icon ? `<img class="sns-icon" src="${UI.escapeHtml(content.icon)}" alt="">` : `
+                        <div class="sns-icon sns-icon--dummy">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                    `}
                     <div>
                         <p class="insta-user-name">${UI.escapeHtml(content.displayName)}</p>
                         <p class="twitter-user-name">@${UI.escapeHtml(content.userName)}</p>
                     </div>
                 </div>
 
-                ${content.image ? `<img class="insta-image" src="${UI.escapeHtml(content.image)}" alt="">` : ""}
+                ${content.image ? `<img class="insta-image" src="${UI.escapeHtml(content.image)}">` : `
+                    <div class="insta-image insta-image--dummy">
+                        <i class="fa-regular fa-image"></i>
+                        <span>投稿画像</span>
+                    </div>
+                `}
 
                 <div class="insta-body">
                     <div class="sns-counts">
@@ -978,7 +1062,11 @@ const EditorController = {
         return `
             <article class="sns-preview dm-preview">
                 <div class="dm-header">
-                    <img class="sns-icon" src="${UI.escapeHtml(content.partnerIcon)}" alt="">
+                    ${content.partnerIcon ? `<img class="sns-icon" src="${UI.escapeHtml(content.icon)}" alt="">` : `
+                        <div class="sns-icon sns-icon--dummy">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                    `}
                     <p class="dm-user-name">${UI.escapeHtml(content.partnerName)}</p>
                 </div>
 
@@ -996,7 +1084,11 @@ const EditorController = {
 
                         return `
                             <div class="dm-message ${isMe ? "is-me" : ""}">
-                                ${!isMe ? `<img class="line-icon" src="${UI.escapeHtml(content.partnerIcon)}" alt="">` : ""}
+                                ${!isMe ? (content.partnerIcon ? `<img class="line-icon" src="${UI.escapeHtml(content.partnerIcon)}" alt="">` : `
+                                    <div class="line-icon line-icon--dummy">
+                                        <i class="fa-solid fa-user"></i>
+                                    </div>
+                                `): ""}
                                 <div>
                                     <div class="dm-call-bubble">
                                         <i class="${iconClass}"></i>
@@ -1013,7 +1105,11 @@ const EditorController = {
 
                         return `
                             <div class="dm-message ${isMe ? "is-me" : ""}">
-                                ${!isMe ? `<img class="line-icon" src="${UI.escapeHtml(content.partnerIcon)}" alt="">` : ""}
+                                ${!isMe ? (content.partnerIcon ? `<img class="line-icon" src="${UI.escapeHtml(content.partnerIcon)}" alt="">` : `
+                                    <div class="line-icon line-icon--dummy">
+                                        <i class="fa-solid fa-user"></i>
+                                    </div>
+                                `): ""}
                                 <div>
                                     <div class="dm-note-bubble">
                                         <i class="fa-solid fa-music"></i>
@@ -1031,7 +1127,11 @@ const EditorController = {
 
                         return `
                             <div class="dm-message ${isMe ? "is-me" : ""}">
-                                ${!isMe ? `<img class="line-icon" src="${UI.escapeHtml(content.partnerIcon)}" alt="">` : ""}
+                                ${!isMe ? (content.partnerIcon ? `<img class="line-icon" src="${UI.escapeHtml(content.partnerIcon)}" alt="">` : `
+                                    <div class="line-icon line-icon--dummy">
+                                        <i class="fa-solid fa-user"></i>
+                                    </div>
+                                `): ""}
                                 <div class="dm-story-wrap">
                                     <div class="dm-story-label">
                                         <i class="fa-regular fa-images"></i>
@@ -1039,8 +1139,13 @@ const EditorController = {
                                     </div>
 
                                     ${message.quoteImage ? `
-                                            <img class="dm-story-image" src="${UI.escapeHtml(message.quoteImage)}" alt="">
-                                        ` : ""}
+                                            <img class="dm-story-image" src="${UI.escapeHtml(message.quoteImage)}">
+                                        ` : `
+                                            <div class="dm-story-image dm-story-image--dummy">
+                                                <i class="fa-regular fa-image"></i>
+                                                <span>ストーリー画像</span>
+                                            </div>
+                                        `}
 
                                     <div class="dm-bubble">${UI.escapeHtml(message.text)}</div>
 
@@ -1054,7 +1159,11 @@ const EditorController = {
 
                     return `
                         <div class="dm-message ${isMe ? "is-me" : ""}">
-                            ${!isMe ? `<img class="line-icon" src="${UI.escapeHtml(content.partnerIcon)}" alt="">` : ""}
+                            ${!isMe ? (content.partnerIcon ? `<img class="line-icon" src="${UI.escapeHtml(content.partnerIcon)}" alt="">` : `
+                                    <div class="line-icon line-icon--dummy">
+                                        <i class="fa-solid fa-user"></i>
+                                    </div>
+                                `): ""}
                             <div>
                                 <div class="dm-bubble">${UI.escapeHtml(message.text)}</div>
                                 ${isMe ? `<span class="read-label">既読</span>` : ""}
@@ -1073,7 +1182,11 @@ const EditorController = {
         return `
             <article class="sns-preview">
                 <div class="twitter-header">
-                    <img class="sns-icon" src="${UI.escapeHtml(content.icon)}" alt="">
+                    ${content.icon ? `<img class="sns-icon" src="${UI.escapeHtml(content.icon)}" alt="">` : `
+                        <div class="sns-icon sns-icon--dummy">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                    `}
                     <div>
                         <p class="twitter-name">${UI.escapeHtml(content.displayName)}</p>
                         <p class="twitter-user-name">@${UI.escapeHtml(content.userName)}</p>
@@ -1083,7 +1196,7 @@ const EditorController = {
                 <div class="insta-body">
                     <p class="sns-text">${UI.escapeHtml(content.text)}</p>
 
-                    ${content.image ? `<img class="twitter-image" src="${UI.escapeHtml(content.image)}" alt="">` : ""}
+                    ${content.image ? `<img class="twitter-image" src="${UI.escapeHtml(content.image)}">` : ""}
                     <div class="sns-counts">
                         <span>💬 ${UI.escapeHtml(content.commentCount || "0")}</span>
                         <span>↻ ${UI.escapeHtml(content.rtCount || "0")}</span>
@@ -1093,6 +1206,39 @@ const EditorController = {
 
                     ${this.renderComments(content.comments)}
                 </div>
+            </article>
+        `;
+    },
+
+    renderLinkLikeText(text) {
+        const escapedText = UI.escapeHtml(text || "");
+
+        return escapedText.replace(/\[\[(.*?)\]\]/g, '<span class="fake-link">$1</span>');
+    },
+
+    renderNewsPreview(block) {
+        const content = block.content;
+
+        return `
+            <article class="news-preview">
+                <div class="news-preview__meta">
+                    <span>${UI.escapeHtml(content.category || "NEWS")}</span>
+                    <span>${UI.escapeHtml(content.media || "Yume News")}</span>
+                </div>
+
+                <h2 class="news-preview__title">${this.renderLinkLikeText(content.title)}</h2>
+                <p class="news-preview__date">${UI.escapeHtml(content.date || "")}</p>
+
+                ${content.image ? `
+                        <img class="news-preview__image" src="${UI.escapeHtml(content.image)}">
+                    ` : `
+                        <div class="news-preview__image news-preview__image--dummy">
+                        <i class="fa-regular fa-image"></i>
+                        <span>ニュース画像</span>
+                    </div>
+                    `}
+
+                <div class="news-preview__body">${this.renderLinkLikeText(content.body).replaceAll("\n", "<br>")}</div>
             </article>
         `;
     },

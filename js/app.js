@@ -2,6 +2,7 @@
 const App = {
     init() {
         ProjectController.init();
+        EpisodeController.init();
         EditorController.init();
         this.bindEvents();
     },

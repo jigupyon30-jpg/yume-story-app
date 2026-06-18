@@ -41,14 +41,15 @@ const ProjectController = {
     saveProject() {
         const now = new Date().toISOString();
         const id = this.elements.id.value || crypto.randomUUID();
+        const oldProject = this.getProjectById(id);
 
         const project = {
             id,
             title: this.elements.title.value.trim(),
             genre: this.elements.genre.value,
             memo: this.elements.memo.value.trim(),
-            blocks: this.getProjectById(id)?.blocks || [],
-            createdAt: this.getProjectById(id)?.createdAt || now,
+            episodes: oldProject?.episodes || [],
+            createdAt: oldProject?.createdAt || now,
             updatedAt: now,
         };
 
@@ -74,6 +75,7 @@ const ProjectController = {
 
     editProject(id) {
         const project = this.getProjectById(id);
+        
 
         if (!project) {
             return;
@@ -171,8 +173,8 @@ const ProjectController = {
                     <p>更新日：${UI.formatDate(project.updatedAt)}</p>
 
                     <div class="card-actions">
-                        <button class="primary-button" onclick="ProjectController.setCurrentProject('${project.id}')">
-                            開く
+                        <button class="primary-button" onclick="ProjectController.openProjectDetail('${project.id}')">
+                            詳細を見る
                         </button>
                         <button class="ghost-button" onclick="ProjectController.editProject('${project.id}')">
                             編集
@@ -213,5 +215,11 @@ const ProjectController = {
                 </article>
             `;
         }).join("");
+    },
+
+    openProjectDetail(id) {
+        this.setCurrentProject(id);
+        EpisodeController.render();
+        UI.showPage(UI.pages.projectDetail);
     },
 };

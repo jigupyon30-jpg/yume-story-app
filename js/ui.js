@@ -6,6 +6,7 @@ const UI = {
         project: "projectPage",
         editor: "editorPage",
         preview: "previewPage",
+        projectDetail: "projectDetailPage",
     },
 
     pageTitles: {
@@ -13,6 +14,7 @@ const UI = {
         projectPage: "作品",
         editorPage: "エディタ",
         previewPage: "プレビュー",
+        projectDetailPage: "作品詳細",
     },
 
     // 指定した画面だけ表示する
